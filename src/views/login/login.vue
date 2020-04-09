@@ -55,7 +55,7 @@
             submitLogin(formName) {
                 this.$refs[formName].validate((valid) => {
                     if (valid) {
-                       this.$router.push('/')
+                       this.$router.push('/admin')
                     }
                 });
             },

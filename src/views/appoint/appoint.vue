@@ -1,12 +1,12 @@
 <template>
-  <div class="nav1-wrap">
-    nav1
+  <div class="appoint-wrap">
+
   </div>
 </template>
 
 <script>
     export default {
-        name: "nav1",
+        name: "appoint",
         data() {
             return {}
         },

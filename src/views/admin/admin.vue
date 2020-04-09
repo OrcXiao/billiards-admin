@@ -24,22 +24,44 @@
                   router
                   :default-active="defaultActive"
                   class="el-menu-vertical-demo">
-            <el-menu-item index="/">
+            <el-menu-item index="/information">
               <i class="el-icon-menu"></i>
-              <span slot="title">导航1</span>
+              <span slot="title">资讯管理</span>
             </el-menu-item>
-            <el-menu-item index="/nav2">
+            <el-menu-item index="/signature">
               <i class="el-icon-document"></i>
-              <span slot="title">导航2</span>
+              <span slot="title">签表管理</span>
             </el-menu-item>
-            <el-menu-item index="/nav3">
-              <i class="el-icon-setting"></i>
-              <span slot="title">导航3</span>
+            <el-menu-item index="/course">
+              <i class="el-icon-picture-outline"></i>
+              <span slot="title">教程管理</span>
+            </el-menu-item>
+            <el-menu-item index="/appoint">
+              <i class="el-icon-help"></i>
+              <span slot="title">约球管理</span>
+            </el-menu-item>
+            <el-menu-item index="/room">
+              <i class="el-icon-s-home"></i>
+              <span slot="title">球房管理</span>
+            </el-menu-item>
+            <el-menu-item index="/game">
+              <i class="el-icon-date"></i>
+              <span slot="title">赛讯管理</span>
+            </el-menu-item>
+            <el-menu-item index="/user">
+              <i class="el-icon-s-custom"></i>
+              <span slot="title">用户管理</span>
+            </el-menu-item>
+            <el-menu-item index="/banner">
+              <i class="el-icon-c-scale-to-original"></i>
+              <span slot="title">banner管理</span>
             </el-menu-item>
           </el-menu>
         </el-aside>
         <el-main>
-          <router-view/>
+          <div class="bkffffff pd20">
+            <router-view/>
+          </div>
         </el-main>
       </el-container>
     </el-container>
@@ -48,7 +70,7 @@
 
 <script>
     export default {
-        name: "home",
+        name: "admin",
         data() {
             return {
                 defaultActive: '/'
@@ -59,13 +81,13 @@
         },
         mounted() {
             this.$nextTick(() => {
-                this.defaultActive = this.$route.path || '/';
+                this.defaultActive = this.$route.path || '/admin';
             })
         },
         methods: {
             handleCommand(command) {
                 if (command === 'logout') {
-                    this.$router.push('/login');
+                    this.$router.push('/');
                 }
             },
         },
@@ -90,6 +112,7 @@
     .container-wrap {
 
       .nav-wrap {
+        background: #ffffff;
         min-height: calc(100vh - 60px);
         border-right: 1px solid #cccccc;
       }

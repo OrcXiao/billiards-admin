@@ -5,31 +5,62 @@ Vue.use(VueRouter);
 
 const routes = [
     {
-        path: '/login',
+        path: '/',
         name: 'login',
         component: () => import('../views/login/login.vue')
     },
     {
-        path: '/',
-        name: 'home',
-        component: () => import('../views/home/home.vue'),
-        children:[
+        path: '/admin',
+        name: 'admin',
+        redirect: '/information',
+        component: () => import('../views/admin/admin.vue'),
+        children: [
             {
-                path: '/',
-                name: 'nav1',
-                component: () => import('../views/nav1/nav1.vue'),
+                path: '/information',
+                name: 'information',
+                component: () => import('../views/information/information.vue'),
 
             },
             {
-                path: '/nav2',
-                name: 'nav2',
-                component: () => import('../views/nav2/nav2.vue'),
+                path: '/signature',
+                name: 'signature',
+                component: () => import('../views/signature/signature.vue'),
 
             },
             {
-                path: '/nav3',
-                name: 'nav3',
-                component: () => import('../views/nav3/nav3.vue'),
+                path: '/course',
+                name: 'course',
+                component: () => import('../views/course/course.vue'),
+
+            },
+            {
+                path: '/appoint',
+                name: 'appoint',
+                component: () => import('../views/appoint/appoint.vue'),
+
+            },
+            {
+                path: '/room',
+                name: 'room',
+                component: () => import('../views/room/room.vue'),
+
+            },
+            {
+                path: '/game',
+                name: 'game',
+                component: () => import('../views/game/game.vue'),
+
+            },
+            {
+                path: '/user',
+                name: 'user',
+                component: () => import('../views/user/user.vue'),
+
+            },
+            {
+                path: '/banner',
+                name: 'banner',
+                component: () => import('../views/banner/banner.vue'),
 
             },
         ]
