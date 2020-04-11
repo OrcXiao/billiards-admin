@@ -3,7 +3,7 @@
     <el-container>
       <el-header class="header-wrap">
         <div class="header-box dis-fl ju-sb fs22 clffffff hg100">
-          <div class="">台球+ 后台管理系统</div>
+          <div @click="$router.push('/admin')" class="cu-pt">台球+ 后台管理系统</div>
           <div>
             <el-dropdown @command="handleCommand" trigger="click" class="cu-pt">
               <span class="clffffff">
@@ -58,7 +58,7 @@
             </el-menu-item>
           </el-menu>
         </el-aside>
-        <el-main>
+        <el-main v-loading="Mixin_loading" element-loading-background="rgba(255, 255, 255, 0.99)">
           <div class="bkffffff pd20">
             <router-view/>
           </div>

@@ -1,6 +1,6 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
-
+import store from '../store';
 Vue.use(VueRouter);
 
 const routes = [
@@ -12,9 +12,14 @@ const routes = [
     {
         path: '/admin',
         name: 'admin',
-        redirect: '/information',
         component: () => import('../views/admin/admin.vue'),
         children: [
+            {
+                path: '',
+                name: 'home',
+                component: () => import('../views/home/home.vue'),
+
+            },
             {
                 path: '/information',
                 name: 'information',
@@ -73,5 +78,10 @@ const router = new VueRouter({
     base: process.env.BASE_URL,
     routes
 });
-
+router.beforeEach((to, from, next) => {
+    store.commit('SET_LOADING_STATE', true);
+    setTimeout(() => {
+        next();
+    }, 200)
+});
 export default router
