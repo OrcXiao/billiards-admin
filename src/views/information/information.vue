@@ -7,7 +7,7 @@
         </el-form-item>
         <el-form-item class="mg-l20" label="创建日期:">
           <el-date-picker
-                  v-model.trim="condition.ctreateTime"
+                  v-model.trim="condition.createTime"
                   align="right"
                   type="date"
                   placeholder="请选择日期">
@@ -104,7 +104,6 @@
           </el-upload>
         </el-form-item>
       </el-form>
-
       <div class="mt10 dis-fl ju-ct">
         <el-button type="primary" @click="submitInfoBtn('info')">确定</el-button>
         <el-button @click="isShowInfoDialog = false">取消</el-button>
@@ -122,7 +121,7 @@
                 //搜索条件
                 condition: {
                     title: '',
-                    ctreateTime: ''
+                    createTime: ''
                 },
                 //表格数据
                 tableData: [{
@@ -192,7 +191,7 @@
             initData() {
                 let params = {
                     title: this.condition.title,
-                    ctreateTime: this.condition.ctreateTime,
+                    createTime: this.condition.createTime,
                     pageNum: this.Mixin_pageNum,
                     pageSize: this.Mixin_pageSize,
                 };
