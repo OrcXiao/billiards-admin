@@ -4,22 +4,39 @@
       <div class="te-ct fs18 ft-b pd-b20">
         台球+后台管理系统
       </div>
-      <el-form :model="login" :rules="loginRules" ref="login">
-        <el-form-item prop="user">
-          <el-input maxlength="20" v-model="login.user" placeholder="请输入账号"></el-input>
-        </el-form-item>
-        <el-form-item prop="password">
-          <el-input maxlength="20" v-model="login.password" type="password" placeholder="请输入密码"></el-input>
-        </el-form-item>
-        <el-form-item>
-          <el-button @click="submitLogin('login')" class="wd100" type="primary">登录</el-button>
-        </el-form-item>
-        <el-form-item>
-          <div class="te-ct cl0061b2">
-            made in 成都星球科技有限公司
-          </div>
-        </el-form-item>
-      </el-form>
+      <el-tabs v-model="activeName" @tab-click="handleClick">
+        <el-tab-pane label="登录" name="1">
+          <el-form :model="login" :rules="loginRules" ref="login">
+            <el-form-item prop="user">
+              <el-input maxlength="20" v-model="login.user" placeholder="请输入账号"></el-input>
+            </el-form-item>
+            <el-form-item prop="password">
+              <el-input maxlength="20" v-model="login.password" type="password" placeholder="请输入密码"></el-input>
+            </el-form-item>
+            <el-form-item>
+              <el-button @click="submitLogin('login')" class="wd100" type="primary">登录</el-button>
+            </el-form-item>
+          </el-form>
+        </el-tab-pane>
+        <el-tab-pane label="注册" name="2">
+          <el-form :model="register" :rules="loginRules" ref="register">
+            <el-form-item prop="user">
+              <el-input maxlength="20" v-model="register.user" placeholder="请输入账号"></el-input>
+            </el-form-item>
+            <el-form-item prop="password">
+              <el-input maxlength="20" v-model="register.password" type="password" placeholder="请输入密码"></el-input>
+            </el-form-item>
+            <el-form-item>
+              <el-button @click="submitRegister('register')" class="wd100" type="primary">注册</el-button>
+            </el-form-item>
+          </el-form>
+
+        </el-tab-pane>
+      </el-tabs>
+
+      <div class="te-ct fs14 cl0061b2">
+        惺惺相惜, 球球相碰 --- 星球科技
+      </div>
     </div>
   </div>
 </template>
@@ -40,6 +57,11 @@
                     password: [
                         {required: true, message: '请输入密码', trigger: 'blur'},
                     ],
+                },
+                activeName: '1',
+                register: {
+                    user: '',
+                    password: '',
                 }
             }
         },
@@ -52,10 +74,32 @@
             //})
         },
         methods: {
+            //切换选项卡
+            handleClick(tab, event) {
+                this.login = {
+                    user: '',
+                    password: '',
+                };
+                this.register = {
+                    user: '',
+                    password: '',
+                };
+                this.$refs['login'].resetFields();
+                this.$refs['register'].resetFields();
+            },
+            //点击登录
             submitLogin(formName) {
                 this.$refs[formName].validate((valid) => {
                     if (valid) {
-                       this.$router.push('/admin')
+                        this.$router.push('/admin')
+                    }
+                });
+            },
+            //点击注册
+            submitRegister(formName) {
+                this.$refs[formName].validate((valid) => {
+                    if (valid) {
+
                     }
                 });
             },
@@ -74,8 +118,21 @@
 
     & > .login-box {
       width: 300px;
-      height: 295px;
+      height: 350px;
       background: #ffffff;
+    }
+
+    /deep/ .el-tabs__nav {
+      width: 100%;
+
+      .el-tabs__item {
+        width: 50%;
+        text-align: center;
+      }
+
+      .el-tabs__active-bar {
+        width: 50% !important;
+      }
     }
   }
 </style>

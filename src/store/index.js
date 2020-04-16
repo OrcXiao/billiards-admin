@@ -6,12 +6,18 @@ Vue.use(Vuex);
 const store = new Vuex.Store({
     state: {
         //页面loading状态
-        pageLoading: false,
+        vx_pageLoading: false,
+        //所有城市
+        vx_getAllCity: [],
     },
     mutations: {
         //设置loading状态
         SET_LOADING_STATE(state, val) {
-            state.pageLoading = val
+            state.vx_pageLoading = val
+        },
+        //设置所有城市
+        SET_ALL_CITY(state, val){
+            state.vx_getAllCity = val;
         }
     }
 

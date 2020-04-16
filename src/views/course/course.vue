@@ -116,7 +116,7 @@
 
 <script>
     export default {
-        name: "signature",
+        name: "course",
         data() {
             return {
                 //搜索条件

@@ -13,7 +13,7 @@ const globalMixins = {
     },
     computed: {
         Mixin_loading: function () {
-            return this.$store.state.pageLoading
+            return this.$store.state.vx_vx_pageLoading
         }
     },
 

@@ -82,9 +82,20 @@
         mounted() {
             this.$nextTick(() => {
                 this.defaultActive = this.$route.path || '/admin';
+                this.getAllCity();
             })
         },
         methods: {
+            //获取全部省份城市信息
+            getAllCity (){
+              this.$api.commonApi.getAllCity().then(res =>{
+                if(res.data && res.data.code === 200){
+                  let data = res.data.data;
+
+                }
+              });
+            },
+            //右上角菜单
             handleCommand(command) {
                 if (command === 'logout') {
                     this.$router.push('/');
