@@ -7,10 +7,13 @@
         </el-form-item>
         <el-form-item class="mg-l20" label="创建日期:">
           <el-date-picker
-                  v-model.trim="condition.createTime"
-                  align="right"
-                  type="date"
-                  placeholder="请选择日期">
+                  class="w300"
+                  v-model.trim="condition.timeRang"
+                  type="daterange"
+                  value-format="timestamp"
+                  range-separator="至"
+                  start-placeholder="开始日期"
+                  end-placeholder="结束日期">
           </el-date-picker>
         </el-form-item>
         <el-form-item class="mg-l20">
@@ -30,25 +33,28 @@
                 width="50">
         </el-table-column>
         <el-table-column
-                prop="date"
+                prop="id"
                 label="资讯ID"
                 width="180">
         </el-table-column>
         <el-table-column
-                prop="name"
+                prop="title"
                 label="资讯标题"
                 width="180">
         </el-table-column>
         <el-table-column
                 prop="address"
                 label="创建时间">
+          <template slot-scope="scope">
+            {{scope.row.createDate | Filter_FormatDate}}
+          </template>
         </el-table-column>
         <el-table-column
-                prop="state"
+                prop="showFlag"
                 width="120"
                 label="资讯状态">
           <template slot-scope="scope">
-            <el-tag v-if="scope.row.state" type="success">启用</el-tag>
+            <el-tag v-if="scope.row.showFlag" type="success">启用</el-tag>
             <el-tag v-else type="danger">禁用</el-tag>
           </template>
         </el-table-column>
@@ -57,9 +63,10 @@
                 label="操作">
           <template slot-scope="scope">
             <el-button @click="clickEditBtn(scope.row)" type="primary">编辑</el-button>
-            <el-button v-if="!scope.row.state" @click="clickStartOrEndBtn(scope.row, 'start')" type="success">启用
+            <el-button v-if="!scope.row.showFlag" @click="clickStartOrEndBtn(scope.row, 'start')" type="success">启用
             </el-button>
-            <el-button v-if="scope.row.state" @click="clickStartOrEndBtn(scope.row, 'end')" type="danger">禁用</el-button>
+            <el-button v-if="scope.row.showFlag" @click="clickStartOrEndBtn(scope.row, 'end')" type="danger">禁用
+            </el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -68,7 +75,7 @@
           <el-pagination
                   @current-change="Mixin_handleCurrentChange"
                   :page-size="Mixin_pageSize"
-                  layout="prev, pager, next, jumper"
+                  layout="total, prev, pager, next, jumper"
                   :total="Mixin_total">
           </el-pagination>
         </el-col>
@@ -121,30 +128,10 @@
                 //搜索条件
                 condition: {
                     title: '',
-                    createTime: ''
+                    timeRang: null
                 },
                 //表格数据
-                tableData: [{
-                    date: '2016-05-02',
-                    name: '王小虎',
-                    address: '上海市普陀区金沙江路 1518 弄',
-                    state: 1
-                }, {
-                    date: '2016-05-04',
-                    name: '王小虎',
-                    address: '上海市普陀区金沙江路 1517 弄',
-                    state: 0
-                }, {
-                    date: '2016-05-01',
-                    name: '王小虎',
-                    address: '上海市普陀区金沙江路 1519 弄',
-                    state: 1
-                }, {
-                    date: '2016-05-03',
-                    name: '王小虎',
-                    address: '上海市普陀区金沙江路 1516 弄',
-                    state: 0
-                }],
+                tableData: [],
                 //显示弹框
                 isShowInfoDialog: false,
                 //资讯obj
@@ -191,11 +178,19 @@
             initData() {
                 let params = {
                     title: this.condition.title,
-                    createTime: this.condition.createTime,
-                    pageNum: this.Mixin_pageNum,
+                    currentPage: this.Mixin_currentPage,
                     pageSize: this.Mixin_pageSize,
                 };
-
+                if (this.condition.timeRang) {
+                    params.startDate = this.condition.timeRang[0];
+                    params.stopDate = this.condition.timeRang[0];
+                }
+                this.$api.information.getInfoList(params).then(res => {
+                    if (res.data && res.data.resultCode === 0) {
+                        this.tableData = res.data.data.records;
+                        this.Mixin_total = res.data.data.total;
+                    }
+                });
             },
             //点击新增按钮
             clickAddBtn() {
@@ -203,9 +198,18 @@
                 this.isShowInfoDialog = true;
             },
             //点击编辑按钮
-            clickEditBtn() {
+            clickEditBtn(row) {
                 this.currentHandle = 'edit';
                 this.isShowInfoDialog = true;
+                this.$api.information.getInformationById(row.id).then(res => {
+                    console.log(res)
+                    if (res.data && res.data.resultCode === 0) {
+                        let data = res.data.data;
+
+                    }
+                });
+
+
             },
 
             //删除图片
@@ -232,11 +236,12 @@
                     cancelButtonText: '取消',
                     type: 'warning'
                 }).then(() => {
-                    if (type === 'start') {
-
-                    } else {
-
-                    }
+                    this.$api.information.updateShow({id: row.id}).then(res => {
+                        if (res.data && res.data.resultCode === 0) {
+                            this.$message.success(`资讯${type === 'start' ? '启用' : '禁用'}成功`);
+                            this.initData();
+                        }
+                    });
 
                 }).catch(() => {
 

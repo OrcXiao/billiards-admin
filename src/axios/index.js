@@ -1,10 +1,16 @@
 import axios from 'axios';
-
+import {Message} from "element-ui";
 //请求超时
-axios.defaults.timeout = 10000;
+axios.defaults.timeout = 50000;
 //请求的基础url
-axios.defaults.baseURL = 'http://billiards.utools.club/api';
-// 跨域请求，允许保存cookie
-// axios.defaults.withCredentials = true;
-axios.defaults.headers.get['content-type'] = 'application/json;charset=UTF-8';
+axios.defaults.baseURL = 'http://billiards.utools.club';
+
+axios.interceptors.response.use(res => {
+    //错误码为-1, 统一进行提示.
+    if (res.data.resultCode === -1) {
+        Message.error(res.data.resultMsg || '系统错误');
+    }
+    return res
+});
+
 export default axios

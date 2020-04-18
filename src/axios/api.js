@@ -31,7 +31,7 @@ const api = {
     information: {
         //通过条件查询资讯分页数据
         getInfoList(params) {
-            return axios.get("/informationDO/getInformations")
+            return axios.get("/informationDO/getInformations",{params})
         },
         //新增资讯(修改)
         addInformation(params) {
@@ -47,7 +47,7 @@ const api = {
         },
         //禁用/启用
         updateShow(params) {
-            return axios.put('/informationDO/updateShow')
+            return axios.put('/informationDO/updateShow', params)
         },
     },
     //签表管理
@@ -66,7 +66,7 @@ const api = {
         },
         // 通过条件查询签表分页数据
         getSignForms(params) {
-            return axios.get('/signFormDO/getSignForms')
+            return axios.get('/signFormDO/getSignForms',{params})
         },
         //禁用/启用
         updateShow(params) {
@@ -89,7 +89,7 @@ const api = {
         },
         // 通过条件查询赛事分页数据
         getContests(params) {
-            return axios.get('/contestDO/getContests')
+            return axios.get('/contestDO/getContests',{params})
         },
         //禁用/启用
         updateShow(params) {
@@ -112,11 +112,11 @@ const api = {
         },
         //通过条件查询球房分页数据
         getRooms(params) {
-            return axios.get('/roomDO/getRooms')
+            return axios.get('/roomDO/getRooms',{params})
         },
     },
     //教程
-    course:{
+    course: {
         // 新增教程(修改)
         addCourse(params) {
             return axios.post('/courseDO/addCourse', params)
@@ -131,7 +131,7 @@ const api = {
         },
         // 通过条件查询教程分页数据
         getCourses(params) {
-            return axios.get('/courseDO/getCourses')
+            return axios.get('/courseDO/getCourses',{params})
         },
         //禁用/启用
         updateShow(params) {

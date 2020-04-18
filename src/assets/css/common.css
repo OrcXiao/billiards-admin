@@ -217,3 +217,9 @@ header, nav, footer, section, main, article, figure, aside{display: block;}
 背景颜色
 */
 .bkffffff{background: #ffffff}
+/*
+宽度
+*/
+.w300{
+  width: 400px !important;
+}

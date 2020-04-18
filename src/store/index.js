@@ -8,7 +8,7 @@ const store = new Vuex.Store({
         //页面loading状态
         vx_pageLoading: false,
         //所有城市
-        vx_getAllCity: [],
+        vx_allCity: [],
     },
     mutations: {
         //设置loading状态
@@ -17,7 +17,7 @@ const store = new Vuex.Store({
         },
         //设置所有城市
         SET_ALL_CITY(state, val){
-            state.vx_getAllCity = val;
+            state.vx_allCity = val;
         }
     }
 

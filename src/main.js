@@ -11,6 +11,11 @@ import globalMixins from "./mixin/global_mixin.js"
 import verify from './verify/index';
 //引入api..
 import api from './axios/api';
+//引入过滤器
+import filters from './filters';
+ for(let item in filters){
+     Vue.filter(item, filters[item])
+ }
 
 Vue.use(ElementUI);
 Vue.mixin(globalMixins);

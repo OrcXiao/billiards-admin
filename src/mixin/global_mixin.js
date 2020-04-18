@@ -4,7 +4,7 @@ const globalMixins = {
     data() {
         return {
             //表格分页页码
-            Mixin_pageNum: 1,
+            Mixin_currentPage: 1,
             //表格每页大小
             Mixin_pageSize: 10,
             //表格总共数据
@@ -23,17 +23,9 @@ const globalMixins = {
         }, 500)
     },
     methods: {
-        //开始过渡动画
-        Mixin_startLoading() {
-            store.commit('SET_LOADING_STATE', true);
-        },
-        //结束过渡动画
-        Mixin_endLoading() {
-            store.commit('SET_LOADING_STATE', true);
-        },
         //表格分页
         Mixin_handleCurrentChange(val) {
-            this.Mixin_pageNum = val;
+            this.Mixin_currentPage = val;
             this.initData()
         },
         //弹框关闭,重置表单
@@ -43,7 +35,6 @@ const globalMixins = {
                 this.$refs[formName] && this.$refs[formName].resetFields();
             }, 100);
         },
-
     },
 };
 

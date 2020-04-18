@@ -87,13 +87,13 @@
         },
         methods: {
             //获取全部省份城市信息
-            getAllCity (){
-              this.$api.commonApi.getAllCity().then(res =>{
-                if(res.data && res.data.code === 200){
-                  let data = res.data.data;
-
-                }
-              });
+            getAllCity() {
+                this.$api.commonApi.getAllCity().then(res => {
+                    if (res.data && res.data.resultCode === 0) {
+                        let data = res.data.data;
+                        this.$store.commit('SET_ALL_CITY', data);
+                    }
+                });
             },
             //右上角菜单
             handleCommand(command) {
