@@ -17,11 +17,11 @@ const globalMixins = {
         }
     },
 
-    mounted() {
-        setTimeout(() => {
-            store.commit('SET_LOADING_STATE', false);
-        }, 500)
-    },
+    // mounted() {
+    //     setTimeout(() => {
+    //         store.commit('SET_LOADING_STATE', false);
+    //     }, 500)
+    // },
     methods: {
         //表格分页
         Mixin_handleCurrentChange(val) {

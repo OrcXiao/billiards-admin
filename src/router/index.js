@@ -21,6 +21,12 @@ const routes = [
 
             },
             {
+                path: '/register',
+                name: 'register',
+                component: () => import('../views/register/register.vue'),
+
+            },
+            {
                 path: '/information',
                 name: 'information',
                 component: () => import('../views/information/information.vue'),
@@ -79,9 +85,6 @@ const router = new VueRouter({
     routes
 });
 router.beforeEach((to, from, next) => {
-    store.commit('SET_LOADING_STATE', true);
-    setTimeout(() => {
-        next();
-    }, 200)
+    next()
 });
 export default router

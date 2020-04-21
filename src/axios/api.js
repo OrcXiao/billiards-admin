@@ -31,7 +31,7 @@ const api = {
     information: {
         //通过条件查询资讯分页数据
         getInfoList(params) {
-            return axios.get("/informationDO/getInformations",{params})
+            return axios.get("/informationDO/getInformations", {params})
         },
         //新增资讯(修改)
         addInformation(params) {
@@ -47,7 +47,7 @@ const api = {
         },
         //禁用/启用
         updateShow(params) {
-            return axios.put('/informationDO/updateShow', params)
+            return axios.put('/informationDO/updateShow?id=' + params)
         },
     },
     //签表管理
@@ -66,11 +66,11 @@ const api = {
         },
         // 通过条件查询签表分页数据
         getSignForms(params) {
-            return axios.get('/signFormDO/getSignForms',{params})
+            return axios.get('/signFormDO/getSignForms', {params})
         },
         //禁用/启用
         updateShow(params) {
-            return axios.put('/signFormDO/updateShow')
+            return axios.put('/signFormDO/updateShow?id=' + params)
         },
     },
     //赛事
@@ -89,11 +89,11 @@ const api = {
         },
         // 通过条件查询赛事分页数据
         getContests(params) {
-            return axios.get('/contestDO/getContests',{params})
+            return axios.get('/contestDO/getContests', {params})
         },
         //禁用/启用
         updateShow(params) {
-            return axios.put('/contestDO/updateShow')
+            return axios.put('/contestDO/updateShow?id=' + params)
         },
     },
     //球房
@@ -112,7 +112,7 @@ const api = {
         },
         //通过条件查询球房分页数据
         getRooms(params) {
-            return axios.get('/roomDO/getRooms',{params})
+            return axios.get('/roomDO/getRooms', {params})
         },
     },
     //教程
@@ -131,11 +131,11 @@ const api = {
         },
         // 通过条件查询教程分页数据
         getCourses(params) {
-            return axios.get('/courseDO/getCourses',{params})
+            return axios.get('/courseDO/getCourses', {params})
         },
         //禁用/启用
         updateShow(params) {
-            return axios.put('/courseDO/updateShow')
+            return axios.put('/courseDO/updateShow?id=' + params)
         },
     }
 

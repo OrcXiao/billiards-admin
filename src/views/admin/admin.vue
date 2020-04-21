@@ -12,6 +12,7 @@
                   <i class="fs16 mg-l10 el-icon-arrow-down"></i>
               </span>
               <el-dropdown-menu slot="dropdown">
+                <el-dropdown-item command="register">注册账号</el-dropdown-item>
                 <el-dropdown-item command="logout">退出</el-dropdown-item>
               </el-dropdown-menu>
             </el-dropdown>
@@ -97,8 +98,13 @@
             },
             //右上角菜单
             handleCommand(command) {
-                if (command === 'logout') {
-                    this.$router.push('/');
+                switch (command) {
+                    case 'logout':
+                        this.$router.push('/');
+                        break;
+                    case 'register':
+                        this.$router.push('/register');
+                        break;
                 }
             },
         },

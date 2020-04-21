@@ -4,8 +4,8 @@
       <div class="te-ct fs18 ft-b pd-b20">
         台球+后台管理系统
       </div>
-      <el-tabs v-model="activeName" @tab-click="handleClick">
-        <el-tab-pane label="登 录" name="1">
+<!--      <el-tabs v-model="activeName" @tab-click="handleClick">-->
+<!--        <el-tab-pane label="登 录" name="1">-->
           <el-form :model="login" :rules="loginRules" ref="login">
             <el-form-item prop="user">
               <el-input maxlength="20" v-model="login.user" placeholder="请输入账号"></el-input>
@@ -17,26 +17,23 @@
               <el-button @click="submitLogin('login')" class="wd100" type="primary">登 录</el-button>
             </el-form-item>
           </el-form>
-        </el-tab-pane>
-        <el-tab-pane label="注 册" name="2">
-          <el-form :model="register" :rules="loginRules" ref="register">
-            <el-form-item prop="user">
-              <el-input maxlength="20" v-model="register.user" placeholder="请输入账号"></el-input>
-            </el-form-item>
-            <el-form-item prop="password">
-              <el-input maxlength="20" v-model="register.password" type="password" placeholder="请输入密码"></el-input>
-            </el-form-item>
-            <el-form-item>
-              <el-button @click="submitRegister('register')" class="wd100" type="primary">注 册</el-button>
-            </el-form-item>
-          </el-form>
+<!--        </el-tab-pane>-->
+<!--        <el-tab-pane label="注 册" name="2">-->
+<!--          <el-form :model="register" :rules="loginRules" ref="register">-->
+<!--            <el-form-item prop="user">-->
+<!--              <el-input maxlength="20" v-model="register.user" placeholder="请输入账号"></el-input>-->
+<!--            </el-form-item>-->
+<!--            <el-form-item prop="password">-->
+<!--              <el-input maxlength="20" v-model="register.password" type="password" placeholder="请输入密码"></el-input>-->
+<!--            </el-form-item>-->
+<!--            <el-form-item>-->
+<!--              <el-button @click="submitRegister('register')" class="wd100" type="primary">注 册</el-button>-->
+<!--            </el-form-item>-->
+<!--          </el-form>-->
 
-        </el-tab-pane>
-      </el-tabs>
+<!--        </el-tab-pane>-->
+<!--      </el-tabs>-->
 
-      <div class="te-ct fs14 cl0061b2">
-        惺惺相惜, 球球相碰 --- 星球科技
-      </div>
     </div>
   </div>
 </template>
@@ -118,7 +115,7 @@
 
     & > .login-box {
       width: 300px;
-      height: 350px;
+      height: 250px;
       background: #ffffff;
     }
 

@@ -7,14 +7,17 @@
         </el-form-item>
         <el-form-item class="mg-l20" label="创建日期:">
           <el-date-picker
-                  v-model.trim="condition.createTime"
-                  align="right"
-                  type="date"
-                  placeholder="请选择日期">
+                  class="w300"
+                  v-model.trim="condition.timeRang"
+                  type="daterange"
+                  value-format="timestamp"
+                  range-separator="至"
+                  start-placeholder="开始日期"
+                  end-placeholder="结束日期">
           </el-date-picker>
         </el-form-item>
         <el-form-item class="mg-l20">
-          <el-button @click="initData">查询</el-button>
+          <el-button @click="Mixin_handleCurrentChange(1)">查询</el-button>
           <el-button type="primary" @click="clickAddBtn">新增</el-button>
         </el-form-item>
       </el-form>
@@ -30,36 +33,38 @@
                 width="50">
         </el-table-column>
         <el-table-column
-                prop="date"
-                label="教程ID"
-                width="180">
+                prop="id"
+                label="教程ID">
         </el-table-column>
         <el-table-column
-                prop="name"
-                label="教程标题"
-                width="180">
+                prop="title"
+                label="教程标题">
         </el-table-column>
         <el-table-column
-                prop="address"
+                width="220"
                 label="创建时间">
+          <template slot-scope="scope">
+            {{scope.row.createDate | Filter_FormatDate}}
+          </template>
         </el-table-column>
         <el-table-column
                 prop="state"
                 width="120"
                 label="教程状态">
           <template slot-scope="scope">
-            <el-tag v-if="scope.row.state" type="success">启用</el-tag>
+            <el-tag v-if="scope.row.showFlag" type="success">启用</el-tag>
             <el-tag v-else type="danger">禁用</el-tag>
           </template>
         </el-table-column>
         <el-table-column
-                prop="address"
+                width="200"
                 label="操作">
           <template slot-scope="scope">
-            <el-button @click="clickEditBtn(scope.row)" type="primary">编辑</el-button>
-            <el-button v-if="!scope.row.state" @click="clickStartOrEndBtn(scope.row, 'start')" type="success">启用
+            <el-button :loading="scope.row.buttonLoading" @click="clickEditBtn(scope.row)" type="primary">编辑</el-button>
+            <el-button v-if="!scope.row.showFlag" @click="clickStartOrEndBtn(scope.row, 'start')" type="success">启用
             </el-button>
-            <el-button v-if="scope.row.state" @click="clickStartOrEndBtn(scope.row, 'end')" type="danger">禁用</el-button>
+            <el-button v-if="scope.row.showFlag" @click="clickStartOrEndBtn(scope.row, 'end')" type="danger">禁用
+            </el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -68,7 +73,7 @@
           <el-pagination
                   @current-change="Mixin_handleCurrentChange"
                   :page-size="Mixin_pageSize"
-                  layout="prev, pager, next, jumper"
+                  layout="total, prev, pager, next, jumper"
                   :total="Mixin_total">
           </el-pagination>
         </el-col>
@@ -104,7 +109,6 @@
           </el-upload>
         </el-form-item>
       </el-form>
-
       <div class="mt10 dis-fl ju-ct">
         <el-button type="primary" @click="submitInfoBtn('info')">确定</el-button>
         <el-button @click="isShowInfoDialog = false">取消</el-button>
@@ -122,30 +126,10 @@
                 //搜索条件
                 condition: {
                     title: '',
-                    createTime: ''
+                    timeRang: null
                 },
                 //表格数据
-                tableData: [{
-                    date: '2016-05-02',
-                    name: '王小虎',
-                    address: '上海市普陀区金沙江路 1518 弄',
-                    state: 1
-                }, {
-                    date: '2016-05-04',
-                    name: '王小虎',
-                    address: '上海市普陀区金沙江路 1517 弄',
-                    state: 0
-                }, {
-                    date: '2016-05-01',
-                    name: '王小虎',
-                    address: '上海市普陀区金沙江路 1519 弄',
-                    state: 1
-                }, {
-                    date: '2016-05-03',
-                    name: '王小虎',
-                    address: '上海市普陀区金沙江路 1516 弄',
-                    state: 0
-                }],
+                tableData: [],
                 //显示弹框
                 isShowInfoDialog: false,
                 //教程obj
@@ -177,6 +161,7 @@
                 },
                 //当前操作状态(edit->编辑, add->新增)
                 currentHandle: '',
+                submitButtonLoading: false,
             }
         },
         computed: {},
@@ -192,21 +177,46 @@
             initData() {
                 let params = {
                     title: this.condition.title,
-                    createTime: this.condition.createTime,
-                    pageNum: this.Mixin_pageNum,
+                    currentPage: this.Mixin_currentPage,
                     pageSize: this.Mixin_pageSize,
                 };
-
+                if (this.condition.timeRang) {
+                    params.startDate = this.condition.timeRang[0];
+                    params.stopDate = this.condition.timeRang[1];
+                }
+                this.$api.course.getCourses(params).then(res => {
+                    if (res.data && res.data.resultCode === 0) {
+                        res.data.data.records.forEach((item, index) => {
+                            item.buttonLoading = false;
+                        });
+                        this.tableData = res.data.data.records;
+                        this.Mixin_total = res.data.data.total;
+                    }
+                });
             },
             //点击新增按钮
             clickAddBtn() {
                 this.currentHandle = 'add';
+                this.info.title = '';
+                this.info.details = '';
+                this.info.img = '';
                 this.isShowInfoDialog = true;
             },
             //点击编辑按钮
-            clickEditBtn() {
+            clickEditBtn(row) {
                 this.currentHandle = 'edit';
-                this.isShowInfoDialog = true;
+                this.info.id = row.id;
+                row.buttonLoading = true;
+                this.$api.course.getCourseById(row.id).then(res => {
+                    row.buttonLoading = false;
+                    if (res.data && res.data.resultCode === 0) {
+                        let data = res.data.data;
+                        this.info.title = data.title;
+                        this.info.details = data.context;
+                        this.info.img = data.imgUrl;
+                        this.isShowInfoDialog = true;
+                    }
+                });
             },
 
             //删除图片
@@ -218,10 +228,40 @@
             submitInfoBtn(formName) {
                 this.$refs[formName].validate(async valid => {
                     if (valid) {
+                        this.submitButtonLoading = true;
                         if (this.currentHandle === 'add') {
-
+                            //新增资讯
+                            let params = {
+                                context: this.info.details,
+                                title: this.info.title,
+                                showFlag: false,
+                                imgUrl: 'test',
+                            };
+                            this.$api.course.addCourse(params).then(res => {
+                                this.submitButtonLoading = false;
+                                if (res.data && res.data.resultCode === 0) {
+                                    this.$message.success('新增教程成功');
+                                    this.initData();
+                                    this.isShowInfoDialog = false;
+                                }
+                            });
                         } else {
-
+                            //编辑资讯
+                            let params = {
+                                id: this.info.id,
+                                context: this.info.details,
+                                title: this.info.title,
+                                showFlag: false,
+                                imgUrl: 'test',
+                            };
+                            this.$api.course.addCourse(params).then(res => {
+                                this.submitButtonLoading = false;
+                                if (res.data && res.data.resultCode === 0) {
+                                    this.$message.success('修改教程成功');
+                                    this.initData();
+                                    this.isShowInfoDialog = false;
+                                }
+                            });
                         }
                     }
                 })
@@ -233,11 +273,12 @@
                     cancelButtonText: '取消',
                     type: 'warning'
                 }).then(() => {
-                    if (type === 'start') {
-
-                    } else {
-
-                    }
+                    this.$api.course.updateShow(row.id).then(res => {
+                        if (res.data && res.data.resultCode === 0) {
+                            this.$message.success(`教程${type === 'start' ? '启用' : '禁用'}成功`);
+                            this.initData();
+                        }
+                    });
 
                 }).catch(() => {
 
