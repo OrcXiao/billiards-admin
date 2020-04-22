@@ -12,19 +12,19 @@ const api = {
     login: {
         //获取登陆验证码
         getCode(params) {
-            axios.get('/user/getCode', params)
+            return axios.get('/user/getCode', {params, responseType: "arraybuffer"},)
         },
         //退出登陆
         logout(params) {
-            axios.get('/user/logout', params)
+            return axios.get('/user/logout', {params})
         },
         //注册用户
         register(params) {
-            axios.post('/user/register', params)
+            return axios.post('/user/register', params)
         },
         //登陆后台系统
         selectUser(params) {
-            axios.post('/user/selectUser', params)
+            return axios.post(`/user/selectUser?account=${params.account}&&password=${params.password}&&randcheckcode=${params.randcheckcode}`)
         },
     },
     //资讯管理

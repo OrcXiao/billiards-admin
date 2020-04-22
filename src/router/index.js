@@ -1,6 +1,7 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
 import store from '../store';
+
 Vue.use(VueRouter);
 
 const routes = [
@@ -76,6 +77,13 @@ const routes = [
             },
         ]
     },
+    {
+        path: '*',
+        component: () => import('../views/err/err.vue'),
+        meta: {
+            title: '404未找到'
+        }
+    },
 
 ];
 
@@ -85,6 +93,18 @@ const router = new VueRouter({
     routes
 });
 router.beforeEach((to, from, next) => {
-    next()
-});
+        if (to.path === '/') {
+            next()
+        } else {
+            let info = localStorage.getItem('userLoginLog');
+            if (info) {
+                next()
+            } else {
+                next({
+                    path: '/'
+                })
+            }
+        }
+    }
+);
 export default router

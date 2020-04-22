@@ -100,13 +100,24 @@
             handleCommand(command) {
                 switch (command) {
                     case 'logout':
-                        this.$router.push('/');
+                        // ;
+                        this.quit();
                         break;
                     case 'register':
                         this.$router.push('/register');
                         break;
                 }
             },
+            //退出
+            quit() {
+                this.$api.login.logout().then(res => {
+                    if (res.data && res.data.resultCode === 0) {
+                        this.$router.push('/')
+                    }
+                });
+
+            },
+
         },
         props: {},
         watch: {},
