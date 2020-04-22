@@ -35,23 +35,24 @@
                 width="50">
         </el-table-column>
         <el-table-column
-                prop="date"
+                prop="id"
                 label="球房ID"
                 width="180">
         </el-table-column>
         <el-table-column
                 prop="name"
-                label="设施"
+                label="球房名称"
                 width="180">
         </el-table-column>
         <el-table-column
-                prop="address"
+                prop="chargingRules"
                 label="收费规则">
         </el-table-column>
         <el-table-column
-                prop="state"
-                width="120"
                 label="创建时间">
+          <template slot-scope="scope">
+            {{scope.row.createDate | Filter_FormatDate}}
+          </template>
         </el-table-column>
         <el-table-column
                 prop="state"
@@ -143,27 +144,7 @@
                     integral: '',
                 },
                 //表格数据
-                tableData: [{
-                    date: '2016-05-02',
-                    name: '王小虎',
-                    address: '上海市普陀区金沙江路 1518 弄',
-                    state: 1
-                }, {
-                    date: '2016-05-04',
-                    name: '王小虎',
-                    address: '上海市普陀区金沙江路 1517 弄',
-                    state: 0
-                }, {
-                    date: '2016-05-01',
-                    name: '王小虎',
-                    address: '上海市普陀区金沙江路 1519 弄',
-                    state: 1
-                }, {
-                    date: '2016-05-03',
-                    name: '王小虎',
-                    address: '上海市普陀区金沙江路 1516 弄',
-                    state: 0
-                }],
+                tableData: [],
                 //显示弹框
                 isShowRoomDialog: false,
                 //教程obj
@@ -177,7 +158,6 @@
                 },
                 //当前操作类型
                 currentHandle: ''
-
             }
         },
         computed: {},
@@ -193,11 +173,22 @@
             initData() {
                 let params = {
                     title: this.condition.title,
-                    createTime: this.condition.createTime,
-                    pageNum: this.Mixin_pageNum,
+                    currentPage: this.Mixin_currentPage,
                     pageSize: this.Mixin_pageSize,
                 };
-
+                if (this.condition.timeRang) {
+                    params.startDate = this.condition.timeRang[0];
+                    params.stopDate = this.condition.timeRang[1];
+                }
+                this.$api.room.getRooms(params).then(res => {
+                    if (res.data && res.data.resultCode === 0) {
+                        res.data.data.records.forEach((item, index) => {
+                            item.buttonLoading = false;
+                        });
+                        this.tableData = res.data.data.records;
+                        this.Mixin_total = res.data.data.total;
+                    }
+                });
             },
             //点击新增按钮
             clickAddBtn() {
