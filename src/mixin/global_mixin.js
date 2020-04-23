@@ -11,17 +11,16 @@ const globalMixins = {
             Mixin_total: 0,
         }
     },
+    beforeCreate() {
+        setTimeout(() => {
+            store.commit('SET_LOADING_STATE', false);
+        }, 500)
+    },
     computed: {
         Mixin_loading: function () {
-            return this.$store.state.vx_vx_pageLoading
+            return this.$store.state.vx_pageLoading
         }
     },
-
-    // mounted() {
-    //     setTimeout(() => {
-    //         store.commit('SET_LOADING_STATE', false);
-    //     }, 500)
-    // },
     methods: {
         //表格分页
         Mixin_handleCurrentChange(val) {

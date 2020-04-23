@@ -37,10 +37,10 @@
               <i class="el-icon-picture-outline"></i>
               <span slot="title">教程管理</span>
             </el-menu-item>
-            <el-menu-item index="/appoint">
-              <i class="el-icon-help"></i>
-              <span slot="title">约球管理</span>
-            </el-menu-item>
+            <!--            <el-menu-item index="/appoint">-->
+            <!--              <i class="el-icon-help"></i>-->
+            <!--              <span slot="title">约球管理</span>-->
+            <!--            </el-menu-item>-->
             <el-menu-item index="/room">
               <i class="el-icon-s-home"></i>
               <span slot="title">球房管理</span>
@@ -49,20 +49,23 @@
               <i class="el-icon-date"></i>
               <span slot="title">赛讯管理</span>
             </el-menu-item>
-            <el-menu-item index="/user">
-              <i class="el-icon-s-custom"></i>
-              <span slot="title">用户管理</span>
-            </el-menu-item>
-            <el-menu-item index="/banner">
-              <i class="el-icon-c-scale-to-original"></i>
-              <span slot="title">banner管理</span>
-            </el-menu-item>
+            <!--            <el-menu-item index="/user">-->
+            <!--              <i class="el-icon-s-custom"></i>-->
+            <!--              <span slot="title">用户管理</span>-->
+            <!--            </el-menu-item>-->
+            <!--            <el-menu-item index="/banner">-->
+            <!--              <i class="el-icon-c-scale-to-original"></i>-->
+            <!--              <span slot="title">banner管理</span>-->
+            <!--            </el-menu-item>-->
           </el-menu>
         </el-aside>
-        <el-main v-loading="Mixin_loading" element-loading-background="rgba(255, 255, 255, 0.99)">
+        <el-main class="main-wrap" v-loading="Mixin_loading" element-loading-background="rgba(255, 255, 255, 0.9)">
           <div class="bkffffff pd20">
-            <router-view/>
+            <transition name="fade-transform" mode="out-in">
+              <router-view/>
+            </transition>
           </div>
+
         </el-main>
       </el-container>
     </el-container>
@@ -94,7 +97,7 @@
                         let data = res.data.data;
                         res.data.data.forEach((item, index) => {
                             item.children.forEach((itemIn, indexIn) => {
-                                itemIn.children.forEach((itemInIn, indexInIn) =>{
+                                itemIn.children.forEach((itemInIn, indexInIn) => {
                                     delete itemInIn.children
                                 })
                             })
@@ -145,11 +148,14 @@
     }
 
     .container-wrap {
-
       .nav-wrap {
         background: #ffffff;
         min-height: calc(100vh - 60px);
         border-right: 1px solid #cccccc;
+      }
+
+      .main-wrap {
+        height: calc(100vh - 60px);
       }
     }
   }

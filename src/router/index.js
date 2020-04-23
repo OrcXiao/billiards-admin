@@ -93,18 +93,18 @@ const router = new VueRouter({
     routes
 });
 router.beforeEach((to, from, next) => {
-        if (to.path === '/') {
+    store.commit('SET_LOADING_STATE', true);
+    if (to.path === '/') {
+        next()
+    } else {
+        let info = localStorage.getItem('userLoginLog');
+        if (info) {
             next()
         } else {
-            let info = localStorage.getItem('userLoginLog');
-            if (info) {
-                next()
-            } else {
-                next({
-                    path: '/'
-                })
-            }
+            next({
+                path: '/'
+            })
         }
     }
-);
+});
 export default router

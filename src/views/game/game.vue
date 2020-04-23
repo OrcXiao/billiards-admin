@@ -5,16 +5,19 @@
         <el-form-item label="标题:">
           <el-input v-model.trim="condition.title" clearable placeholder="请输入标题"></el-input>
         </el-form-item>
-        <el-form-item class="mg-l20" label="创建日期:">
+        <el-form-item class="mg-l10" label="创建日期:">
           <el-date-picker
-                  v-model.trim="condition.createTime"
-                  align="right"
-                  type="date"
-                  placeholder="请选择日期">
+                  class="w300"
+                  v-model.trim="condition.timeRang"
+                  type="daterange"
+                  value-format="timestamp"
+                  range-separator="至"
+                  start-placeholder="开始日期"
+                  end-placeholder="结束日期">
           </el-date-picker>
         </el-form-item>
         <el-form-item class="mg-l20">
-          <el-button @click="initData">查询</el-button>
+          <el-button @click="Mixin_handleCurrentChange(1)">查询</el-button>
           <el-button type="primary" @click="clickAddBtn">新增</el-button>
         </el-form-item>
       </el-form>
@@ -30,28 +33,30 @@
                 width="50">
         </el-table-column>
         <el-table-column
-                prop="date"
+                prop="id"
                 label="赛讯ID"
                 width="180">
         </el-table-column>
         <el-table-column
-                prop="name"
+                prop="title"
                 label="赛讯标题"
                 width="180">
         </el-table-column>
         <el-table-column
-                prop="name"
+                prop="peopleNumber"
                 label="赛讯人数"
                 width="180">
         </el-table-column>
         <el-table-column
-                prop="name"
+                prop="money"
                 label="总奖金"
                 width="180">
         </el-table-column>
         <el-table-column
-                prop="address"
                 label="创建时间">
+          <template slot-scope="scope">
+            {{scope.row.createDate | Filter_FormatDate}}
+          </template>
         </el-table-column>
         <el-table-column
                 prop="address"
@@ -85,6 +90,18 @@
         </el-form-item>
         <el-form-item label="赛讯详情 :" prop="details">
           <el-input maxlength="100" type="textarea" placeholder="请输入赛讯详情" v-model.trim="info.details"></el-input>
+        </el-form-item>
+        <el-form-item label="点赞数 :" prop="fabulousNumber">
+          <el-input placeholder="请输入点赞数" v-model.trim="info.fabulousNumber"></el-input>
+        </el-form-item>
+        <el-form-item label="总奖金 :" prop="money">
+          <el-input placeholder="请输入总奖金" v-model.trim="info.money"></el-input>
+        </el-form-item>
+        <el-form-item label="参赛人数 :" prop="peopleNumber">
+          <el-input placeholder="请输入参赛人数" v-model.trim="info.peopleNumber"></el-input>
+        </el-form-item>
+        <el-form-item label="赛事状态 :" prop="state">
+          <el-input placeholder="请输入赛事状态" v-model.trim="info.state"></el-input>
         </el-form-item>
         <el-form-item label="赛讯标题图片  :" prop="img">
           <el-upload
@@ -123,27 +140,7 @@
                     createTime: ''
                 },
                 //表格数据
-                tableData: [{
-                    date: '2016-05-02',
-                    name: '王小虎',
-                    address: '上海市普陀区金沙江路 1518 弄',
-                    state: 1
-                }, {
-                    date: '2016-05-04',
-                    name: '王小虎',
-                    address: '上海市普陀区金沙江路 1517 弄',
-                    state: 0
-                }, {
-                    date: '2016-05-01',
-                    name: '王小虎',
-                    address: '上海市普陀区金沙江路 1519 弄',
-                    state: 1
-                }, {
-                    date: '2016-05-03',
-                    name: '王小虎',
-                    address: '上海市普陀区金沙江路 1516 弄',
-                    state: 0
-                }],
+                tableData: [],
                 //显示弹框
                 isShowGameDialog: false,
                 //赛讯obj
@@ -190,11 +187,22 @@
             initData() {
                 let params = {
                     title: this.condition.title,
-                    createTime: this.condition.createTime,
-                    pageNum: this.Mixin_pageNum,
+                    currentPage: this.Mixin_currentPage,
                     pageSize: this.Mixin_pageSize,
                 };
-
+                if (this.condition.timeRang) {
+                    params.startDate = this.condition.timeRang[0];
+                    params.stopDate = this.condition.timeRang[1];
+                }
+                this.$api.game.getContests(params).then(res => {
+                    if (res.data && res.data.resultCode === 0) {
+                        res.data.data.records.forEach((item, index) => {
+                            item.buttonLoading = false;
+                        });
+                        this.tableData = res.data.data.records;
+                        this.Mixin_total = res.data.data.total;
+                    }
+                });
             },
             //点击新增按钮
             clickAddBtn() {
