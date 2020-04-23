@@ -110,7 +110,7 @@
         </el-form-item>
       </el-form>
       <div class="mt10 dis-fl ju-ct">
-        <el-button type="primary" @click="submitInfoBtn('info')">确定</el-button>
+        <el-button v-loading="submitButtonLoading" type="primary" @click="submitInfoBtn('info')">确定</el-button>
         <el-button @click="isShowInfoDialog = false">取消</el-button>
       </div>
     </el-dialog>

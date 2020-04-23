@@ -92,6 +92,13 @@
                 this.$api.commonApi.getAllCity().then(res => {
                     if (res.data && res.data.resultCode === 0) {
                         let data = res.data.data;
+                        res.data.data.forEach((item, index) => {
+                            item.children.forEach((itemIn, indexIn) => {
+                                itemIn.children.forEach((itemInIn, indexInIn) =>{
+                                    delete itemInIn.children
+                                })
+                            })
+                        });
                         this.$store.commit('SET_ALL_CITY', data);
                     }
                 });

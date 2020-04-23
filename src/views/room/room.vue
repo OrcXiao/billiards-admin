@@ -2,28 +2,31 @@
   <div class="signature-wrap">
     <div>
       <el-form :inline="true">
-        <el-form-item label="地区:">
-          <el-cascader v-model.trim="condition.area" :options="options"></el-cascader>
-        </el-form-item>
+        <!--        <el-form-item label="地区:">-->
+        <!--          <el-cascader v-model.trim="condition.area" :options="options" :props="props"></el-cascader>-->
+        <!--        </el-form-item>-->
         <el-form-item class="mg-l10" label="球房名称:">
-          <el-input v-model.trim="condition.title" clearable placeholder="请输入球房名称"></el-input>
+          <el-input v-model.trim="condition.name" clearable placeholder="请输入球房名称"></el-input>
         </el-form-item>
         <el-form-item class="mg-l10" label="创建日期:">
           <el-date-picker
-                  v-model.trim="condition.createTime"
-                  align="right"
-                  type="date"
-                  placeholder="请选择日期">
+                  class="w300"
+                  v-model.trim="condition.timeRang"
+                  type="daterange"
+                  value-format="timestamp"
+                  range-separator="至"
+                  start-placeholder="开始日期"
+                  end-placeholder="结束日期">
           </el-date-picker>
         </el-form-item>
         <el-form-item class="mg-l20">
-          <el-button @click="initData">查询</el-button>
+          <el-button @click="Mixin_handleCurrentChange(1)">查询</el-button>
           <el-button @click="clickAddBtn" type="primary">新增</el-button>
 
         </el-form-item>
       </el-form>
     </div>
-    <div>总计: 100家</div>
+    <div>总计: {{Mixin_total}}家</div>
     <div class="mg-t20">
       <el-table
               border=""
@@ -44,6 +47,11 @@
                 label="球房名称"
                 width="180">
         </el-table-column>
+        <el-table-column label="所在地区">
+          <template slot-scope="scope">
+            {{scope.row.province}}{{scope.row.city}}{{scope.row.area}}
+          </template>
+        </el-table-column>
         <el-table-column
                 prop="chargingRules"
                 label="收费规则">
@@ -63,8 +71,9 @@
                 prop="address"
                 label="操作">
           <template slot-scope="scope">
-            <el-button @click="clickEditBtn(scope.row)" type="primary">编辑</el-button>
-            <el-button @click="clickRemoveBtn(scope.row)" type="danger">禁用</el-button>
+            <el-button :loading="scope.row.buttonLoading" @click="clickEditBtn(scope.row)" type="primary">编辑</el-button>
+            <el-button @click="clickRemoveBtn(scope.row)" type="danger">删除</el-button>
+
           </template>
         </el-table-column>
       </el-table>
@@ -85,26 +94,33 @@
             :visible.sync="isShowRoomDialog"
             @close="Mixin_dialogClose('room', 'isShowRoomDialog')"
             width="700px">
-      <el-form label-width="120px">
-        <el-form-item label="球房名称 :" prop="title">
-          <el-input maxlength="20" placeholder="请输入教程标题" v-model.trim="room.title"></el-input>
+      <el-form ref="room" :model="room" :rules="roomRules" label-width="120px">
+        <el-form-item label="球房名称 :" prop="name">
+          <el-input maxlength="20" placeholder="请输入球房名称" v-model.trim="room.name"></el-input>
         </el-form-item>
-        <el-form-item label="球房设施 :" prop="details">
-          <el-input maxlength="100" type="textarea" placeholder="请输入球房设施" v-model.trim="room.details"></el-input>
+        <el-form-item label="球房经度 :" prop="longitude">
+          <el-input placeholder="请输入球房经度" v-model.trim="room.longitude"></el-input>
         </el-form-item>
-        <el-form-item label="球房经度 :" prop="details">
-          <el-input placeholder="请输入球房经度" v-model.trim="room.details"></el-input>
+        <el-form-item label="球房纬度 :" prop="latitude">
+          <el-input placeholder="请输入球房纬度" v-model.trim="room.latitude"></el-input>
         </el-form-item>
-        <el-form-item label="球房纬度 :" prop="details">
-          <el-input placeholder="请输入球房纬度" v-model.trim="room.details"></el-input>
+        <el-form-item label="收费规则 :" prop="charge">
+          <el-input placeholder="请输入收费规则" type="textarea" v-model.trim="room.charge"></el-input>
         </el-form-item>
-        <el-form-item label="收费规则 :" prop="details">
-          <el-input placeholder="请输入球房设施" v-model.trim="room.details"></el-input>
+        <el-form-item label="球房活动 :" prop="activity">
+          <el-input placeholder="请输入球房活动" type="textarea" v-model.trim="room.activity"></el-input>
         </el-form-item>
-        <el-form-item label="球房活动 :" prop="details">
-          <el-input placeholder="请输入球房设施" type="textarea" v-model.trim="room.details"></el-input>
+        <el-form-item label="球房设备 :" prop="equipment">
+          <el-input placeholder="请输入球房设备" type="textarea" v-model.trim="room.equipment"></el-input>
         </el-form-item>
-        <el-form-item label="球房图片 :" prop="details">
+        <el-form-item label="所在地区 :" prop="area">
+          <el-cascader class="wd100" placeholder="请选择所在地区" v-model.trim="room.area" :options="options"
+                       :props="props"></el-cascader>
+        </el-form-item>
+        <el-form-item label="具体地址 :" prop="address">
+          <el-input placeholder="请输入具体地址" v-model.trim="room.address"></el-input>
+        </el-form-item>
+        <el-form-item label="球房图片 :">
           <el-upload
                   action="#"
                   list-type="picture-card"
@@ -123,7 +139,8 @@
 
       </el-form>
       <div class="mt10 dis-fl ju-ct">
-        <el-button type="primary" @click="isShowRoomDialog = false">确定</el-button>
+        <el-button :loading="submitButtonLoading" type="primary" @click="submitRoomBtn('room')">确定</el-button>
+        <el-button @click="isShowRoomDialog = false">取消</el-button>
       </div>
     </el-dialog>
 
@@ -135,11 +152,15 @@
         name: "room",
         data() {
             return {
-                options: [],
+                props: {
+                    value: 'text',
+                    label: 'text',
+                    children: 'children'
+                },
                 //搜索条件
                 condition: {
                     area: '',
-                    title: '',
+                    name: '',
                     createTime: '',
                     integral: '',
                 },
@@ -149,18 +170,68 @@
                 isShowRoomDialog: false,
                 //教程obj
                 room: {
-                    //标题
-                    title: '',
-                    //详情
-                    details: '',
-                    //教程图片
-                    img: ''
+                    name: '',
+                    longitude: '',
+                    latitude: '',
+                    charge: '',
+                    activity: '',
+                    equipment: '',
+                    area: '',
+                    address: '',
+                    imgList: '',
+                },
+                roomRules: {
+                    name: {
+                        required: true,
+                        validator: this.$verifys.nullStr({item: '球房名称'}),
+                        trigger: 'blur'
+                    },
+                    longitude: {
+                        required: true,
+                        validator: this.$verifys.nullStr({item: '球房经度'}),
+                        trigger: 'blur'
+                    },
+                    latitude: {
+                        required: true,
+                        validator: this.$verifys.nullStr({item: '球房纬度'}),
+                        trigger: 'blur'
+                    },
+                    charge: {
+                        required: true,
+                        validator: this.$verifys.nullStr({item: '收费规则'}),
+                        trigger: 'blur'
+                    },
+                    activity: {
+                        required: true,
+                        validator: this.$verifys.nullStr({item: '球房活动'}),
+                        trigger: 'blur'
+                    },
+                    equipment: {
+                        required: true,
+                        validator: this.$verifys.nullStr({item: '球房设备'}),
+                        trigger: 'blur'
+                    },
+                    area: {
+                        required: true,
+                        validator: this.$verifys.nullStr({item: '所在地区'}),
+                        trigger: 'blur'
+                    },
+                    address: {
+                        required: true,
+                        validator: this.$verifys.nullStr({item: '具体地址'}),
+                        trigger: 'blur'
+                    },
                 },
                 //当前操作类型
-                currentHandle: ''
+                currentHandle: '',
+                submitButtonLoading: false,
             }
         },
-        computed: {},
+        computed: {
+            options() {
+                return this.$store.state.vx_allCity
+            }
+        },
         created() {
         },
         mounted() {
@@ -172,7 +243,7 @@
             //获取数据
             initData() {
                 let params = {
-                    title: this.condition.title,
+                    name: this.condition.name,
                     currentPage: this.Mixin_currentPage,
                     pageSize: this.Mixin_pageSize,
                 };
@@ -196,26 +267,105 @@
                 this.isShowRoomDialog = true;
             },
             //点击编辑按钮
-            clickEditBtn() {
+            clickEditBtn(row) {
                 this.currentHandle = 'edit';
-                this.isShowRoomDialog = true;
-            },
-            //点击删除按钮
-            clickRemoveBtn(row) {
-                this.$confirm(`确定删除该球房 ?`, '', {
-                    confirmButtonText: '确定',
-                    cancelButtonText: '取消',
-                    type: 'warning'
-                }).then(() => {
-
-
-                }).catch(() => {
-
+                row.buttonLoading = true;
+                this.$api.room.getRoomById(row.id).then(res => {
+                    row.buttonLoading = false;
+                    if (res.data && res.data.resultCode === 0) {
+                        let data = res.data.data;
+                        console.log(data);
+                        this.room.id = data.id;
+                        this.room.name = data.name;
+                        this.room.longitude = data.longitude;
+                        this.room.latitude = data.latitude;
+                        this.room.charge = data.chargingRules;
+                        this.room.activity = data.activity;
+                        this.room.equipment = data.facilities;
+                        this.room.address = data.address;
+                        this.room.area = [data.province, data.city, data.area];
+                        this.isShowRoomDialog = true;
+                    }
                 });
+
             },
             //删除图片
             handleRemove() {
 
+            },
+            //提交球房
+            submitRoomBtn(formName) {
+                this.$refs[formName].validate(async valid => {
+                    if (valid) {
+                        this.submitButtonLoading = true;
+                        if (this.currentHandle === 'add') {
+                            //新增球房
+                            let params = {
+                                activity: this.room.activity,
+                                chargingRules: this.room.charge,
+                                facilities: this.room.equipment,
+                                latitude: this.room.latitude,
+                                longitude: this.room.longitude,
+                                name: this.room.name,
+                                province: this.room.area[0],
+                                city: this.room.area[1],
+                                area: this.room.area[2],
+                                address: this.room.address,
+                            };
+                            delete this.room.id;
+                            this.$api.room.addRoom(params).then(res => {
+                                this.submitButtonLoading = false;
+                                if (res.data && res.data.resultCode === 0) {
+                                    this.$message.success('新增球房成功');
+                                    this.initData();
+                                    this.isShowRoomDialog = false;
+                                }
+                            });
+                        } else {
+                            //编辑球房
+                            let params = {
+                                id: this.room.id,
+                                activity: this.room.activity,
+                                chargingRules: this.room.charge,
+                                facilities: this.room.equipment,
+                                latitude: this.room.latitude,
+                                longitude: this.room.longitude,
+                                name: this.room.name,
+                                province: this.room.area[0],
+                                city: this.room.area[1],
+                                area: this.room.area[2],
+                                address: this.room.address,
+                            };
+                            this.$api.room.addRoom(params).then(res => {
+                                this.submitButtonLoading = false;
+                                if (res.data && res.data.resultCode === 0) {
+                                    this.$message.success('修改球房成功');
+                                    this.initData();
+                                    this.isShowRoomDialog = false;
+                                }
+                            });
+                        }
+                    }
+                })
+            },
+
+            //点击删除
+            clickRemoveBtn(row, type) {
+                this.$confirm(`确定删除当前球房 ?`, '', {
+                    confirmButtonText: '确定',
+                    cancelButtonText: '取消',
+                    type: 'warning'
+                }).then(() => {
+                    this.$api.room.delRoom(row.id).then(res => {
+                        if (res.data && res.data.resultCode === 0) {
+                            this.$message.success(`球房删除成功`);
+                            this.Mixin_handleCurrentChange(1);
+                        }
+                    });
+
+                }).catch(() => {
+
+                });
             },
 
 
