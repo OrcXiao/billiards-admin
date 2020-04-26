@@ -76,7 +76,7 @@
                     this.loading = false;
                     if (res.data && res.data.resultCode === 0) {
                         this.imgSrc = res.data.data;
-                        this.$emit('uploadSuccess', res.data.data);
+                        this.$emit('uploadSuccess', {imgSrc: res.data.data});
                     } else {
                         this.$message.error('文件上传失败 !');
                     }
@@ -88,7 +88,7 @@
             //点击删除图标
             clickRemoveIcon() {
                 this.imgSrc = '';
-                this.$emit('uploadSuccess', '');
+                this.$emit('uploadSuccess', {imgSrc: '', uploadName: this.uploadName});
                 document.getElementById('uploadForm' + this.uploadName).value = null;
             },
         },

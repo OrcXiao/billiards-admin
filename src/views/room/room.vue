@@ -120,21 +120,46 @@
         <el-form-item label="具体地址 :" prop="address">
           <el-input placeholder="请输入具体地址" v-model.trim="room.address"></el-input>
         </el-form-item>
-        <el-form-item label="球房图片 :">
-          <el-upload
-                  action="#"
-                  list-type="picture-card"
-                  :auto-upload="false">
-            <i slot="default" class="el-icon-plus"></i>
-            <div slot="file" slot-scope="{file}">
-              <img class="el-upload-list__item-thumbnail" :src="file.url" alt="">
-              <span class="el-upload-list__item-actions">
-                <span class="el-upload-list__item-delete" @click="handleRemove(file)">
-                  <i class="el-icon-delete"></i>
-                </span>
-              </span>
-            </div>
-          </el-upload>
+        <el-form-item label="球房图片 :" prop="img">
+          <div class="fs14 clff0000">第一张图为球房头像图</div>
+          <div class="dis-fl fl-wp">
+            <CmUpload
+                    class="mg-r10 mg-b10"
+                    upload-name="imgOne"
+                    :initObj="room.imgOne"
+                    @uploadSuccess="uploadSuccess">
+            </CmUpload>
+            <CmUpload
+                    class="mg-r10 mg-b10"
+                    upload-name="imgTwo"
+                    :initObj="room.imgTwo"
+                    @uploadSuccess="uploadSuccess">
+            </CmUpload>
+            <CmUpload
+                    class="mg-r10 mg-b10"
+                    upload-name="imgThree"
+                    :initObj="room.imgThree"
+                    @uploadSuccess="uploadSuccess">
+            </CmUpload>
+            <CmUpload
+                    class="mg-r10 mg-b10"
+                    upload-name="imgFour"
+                    :initObj="room.imgFour"
+                    @uploadSuccess="uploadSuccess">
+            </CmUpload>
+            <CmUpload
+                    class="mg-r10 mg-b10"
+                    upload-name="imgFive"
+                    :initObj="room.imgFive"
+                    @uploadSuccess="uploadSuccess">
+            </CmUpload>
+            <CmUpload
+                    class="mg-r10 mg-b10"
+                    upload-name="imgSix"
+                    :initObj="room.imgSix"
+                    @uploadSuccess="uploadSuccess">
+            </CmUpload>
+          </div>
         </el-form-item>
 
       </el-form>
@@ -151,6 +176,14 @@
     export default {
         name: "room",
         data() {
+            let validateImg = (rule, value, callback) => {
+                console.log(value)
+                if (value === '') {
+                    callback(new Error('11'));
+                } else {
+                    callback();
+                }
+            };
             return {
                 props: {
                     value: 'text',
@@ -178,7 +211,12 @@
                     equipment: '',
                     area: '',
                     address: '',
-                    imgList: '',
+                    imgOne: '',
+                    imgTwo: '',
+                    imgThree: '',
+                    imgFour: '',
+                    imgFive: '',
+                    imgSix: '',
                 },
                 roomRules: {
                     name: {
@@ -219,6 +257,11 @@
                     address: {
                         required: true,
                         validator: this.$verifys.nullStr({item: '具体地址'}),
+                        trigger: 'blur'
+                    },
+                    img: {
+                        required: true,
+                        validator: validateImg,
                         trigger: 'blur'
                     },
                 },
@@ -274,7 +317,6 @@
                     row.buttonLoading = false;
                     if (res.data && res.data.resultCode === 0) {
                         let data = res.data.data;
-                        console.log(data);
                         this.room.id = data.id;
                         this.room.name = data.name;
                         this.room.longitude = data.longitude;
@@ -289,9 +331,9 @@
                 });
 
             },
-            //删除图片
-            handleRemove() {
-
+            //上传图片
+            uploadSuccess(data) {
+                this.room[data.uploadName] = data.imgSrc;
             },
             //提交球房
             submitRoomBtn(formName) {

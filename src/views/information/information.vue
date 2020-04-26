@@ -210,8 +210,6 @@
                 //当前操作状态(edit->编辑, add->新增)
                 currentHandle: '',
                 submitButtonLoading: false,
-                uploading: false,
-
             }
         },
         computed: {},
@@ -276,7 +274,7 @@
             },
             //上传成功
             uploadSuccess(data) {
-                this.info.img = data;
+                this.info.img = data.imgSrc;
             },
             //提交资讯
             submitInfoBtn(formName) {

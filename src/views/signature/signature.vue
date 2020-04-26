@@ -219,7 +219,7 @@
 
             //上传成功
             uploadSuccess(data) {
-                this.info.img = data;
+                this.info.img = data.imgSrc;
             },
             //提交签表
             submitInfoBtn(formName) {

@@ -93,20 +93,11 @@
           <el-input maxlength="100" type="textarea" placeholder="请输入教程详情" v-model.trim="info.details"></el-input>
         </el-form-item>
         <el-form-item label="教程标题图片  :" prop="img">
-          <el-upload
-                  action="#"
-                  list-type="picture-card"
-                  :auto-upload="false">
-            <i slot="default" class="el-icon-plus"></i>
-            <div slot="file" slot-scope="{file}">
-              <img class="el-upload-list__item-thumbnail" :src="file.url" alt="">
-              <span class="el-upload-list__item-actions">
-                <span class="el-upload-list__item-delete" @click="handleRemove(file)">
-                  <i class="el-icon-delete"></i>
-                </span>
-              </span>
-            </div>
-          </el-upload>
+          <CmUpload
+                  upload-name="img"
+                  :initObj="info.img"
+                  @uploadSuccess="uploadSuccess">
+          </CmUpload>
         </el-form-item>
       </el-form>
       <div class="mt10 dis-fl ju-ct">
@@ -157,7 +148,13 @@
                             trigger: 'blur'
                         },
                     ],
-                    img: ''
+                    img: [
+                        {
+                            required: true,
+                            validator: this.$verifys.nullStr({item: '教程标题图片'}),
+                            trigger: 'change'
+                        },
+                    ],
                 },
                 //当前操作状态(edit->编辑, add->新增)
                 currentHandle: '',
@@ -218,12 +215,10 @@
                     }
                 });
             },
-
-            //删除图片
-            handleRemove() {
-
+            //上传成功
+            uploadSuccess(data) {
+                this.info.img = data.imgSrc;
             },
-
             //提交教程
             submitInfoBtn(formName) {
                 this.$refs[formName].validate(async valid => {
@@ -235,7 +230,7 @@
                                 context: this.info.details,
                                 title: this.info.title,
                                 showFlag: false,
-                                imgUrl: 'test',
+                                imgUrl: this.info.img
                             };
                             this.$api.course.addCourse(params).then(res => {
                                 this.submitButtonLoading = false;
@@ -252,7 +247,7 @@
                                 context: this.info.details,
                                 title: this.info.title,
                                 showFlag: false,
-                                imgUrl: 'test',
+                                imgUrl: this.info.img
                             };
                             this.$api.course.addCourse(params).then(res => {
                                 this.submitButtonLoading = false;
