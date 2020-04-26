@@ -115,7 +115,6 @@
           <CmUpload
                   upload-name="img"
                   :initObj="info.img"
-                  @removeImg="removeImg"
                   @uploadSuccess="uploadSuccess">
           </CmUpload>
         </el-form-item>
