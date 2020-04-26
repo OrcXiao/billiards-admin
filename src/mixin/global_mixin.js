@@ -9,6 +9,9 @@ const globalMixins = {
             Mixin_pageSize: 10,
             //表格总共数据
             Mixin_total: 0,
+            //全局的上传地址
+            Mixin_uploadUrl: this.$api.uploadUrl,
+
         }
     },
     beforeCreate() {
@@ -21,6 +24,7 @@ const globalMixins = {
             return this.$store.state.vx_pageLoading
         }
     },
+
     methods: {
         //表格分页
         Mixin_handleCurrentChange(val) {
@@ -34,6 +38,15 @@ const globalMixins = {
                 this.$refs[formName] && this.$refs[formName].resetFields();
             }, 100);
         },
+        //上传之前的回调
+        Mixin_beforeImgUpload (file){
+            const isSize5G = file.size / 1024 / 1024 /1024 < 5;
+            if (!isSize5G) {
+                this.$message.error('上传的文件大小不能超过 5G!');
+            }
+            return isSize5G;
+        },
+
     },
 };
 

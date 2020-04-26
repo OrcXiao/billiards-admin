@@ -111,21 +111,13 @@
             <el-option :label="4" :value="4"></el-option>
           </el-select>
         </el-form-item>
-        <el-form-item label="资讯标题图片  :" prop="img">
-          <el-upload
-                  action="#"
-                  list-type="picture-card"
-                  :auto-upload="false">
-            <i slot="default" class="el-icon-plus"></i>
-            <div slot="file" slot-scope="{file}">
-              <img class="el-upload-list__item-thumbnail" :src="file.url" alt="">
-              <span class="el-upload-list__item-actions">
-                <span class="el-upload-list__item-delete" @click="handleRemove(file)">
-                  <i class="el-icon-delete"></i>
-                </span>
-              </span>
-            </div>
-          </el-upload>
+        <el-form-item label="资讯标题图片 :" prop="img">
+          <CmUpload
+                  upload-name="img"
+                  :initObj="info.img"
+                  @removeImg="removeImg"
+                  @uploadSuccess="uploadSuccess">
+          </CmUpload>
         </el-form-item>
       </el-form>
       <div class="mt10 dis-fl ju-ct">
@@ -138,6 +130,8 @@
 </template>
 
 <script>
+    // import upload from '../../components/upload.vue';
+
     export default {
         name: "information",
         data() {
@@ -205,11 +199,18 @@
                             trigger: 'blur'
                         },
                     ],
-                    img: ''
+                    img: [
+                        {
+                            required: true,
+                            validator: this.$verifys.nullStr({item: '资讯标题图片'}),
+                            trigger: 'change'
+                        },
+                    ],
                 },
                 //当前操作状态(edit->编辑, add->新增)
                 currentHandle: '',
                 submitButtonLoading: false,
+                uploading: false,
 
             }
         },
@@ -253,7 +254,6 @@
                 this.info.type = '';
                 this.info.img = '';
                 this.isShowInfoDialog = true;
-
             },
             //点击编辑按钮
             clickEditBtn(row) {
@@ -264,22 +264,20 @@
                     row.buttonLoading = false;
                     if (res.data && res.data.resultCode === 0) {
                         let data = res.data.data;
+                        this.isShowInfoDialog = true;
                         this.info.title = data.title;
                         this.info.details = data.context;
                         this.info.praisePoints = data.praisePoints;
                         this.info.readNumber = data.readNumber;
                         this.info.type = data.type;
                         this.info.img = data.imgUrl;
-                        this.isShowInfoDialog = true;
                     }
                 });
             },
-
-            //删除图片
-            handleRemove() {
-
+            //上传成功
+            uploadSuccess(data) {
+                this.info.img = data;
             },
-
             //提交资讯
             submitInfoBtn(formName) {
                 this.$refs[formName].validate(async valid => {
@@ -292,8 +290,9 @@
                                 title: this.info.title,
                                 praisePoints: this.info.praisePoints,
                                 readNumber: this.info.readNumber,
+                                type: this.info.type,
                                 showFlag: false,
-                                imgUrl: 'test',
+                                imgUrl: this.info.img,
                             };
                             this.$api.information.addInformation(params).then(res => {
                                 this.submitButtonLoading = false;
@@ -311,8 +310,9 @@
                                 title: this.info.title,
                                 praisePoints: this.info.praisePoints,
                                 readNumber: this.info.readNumber,
+                                type: this.info.type,
                                 showFlag: false,
-                                imgUrl: 'test',
+                                imgUrl: this.info.img,
                             };
                             this.$api.information.addInformation(params).then(res => {
                                 this.submitButtonLoading = false;

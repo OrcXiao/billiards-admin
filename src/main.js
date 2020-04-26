@@ -9,19 +9,25 @@ import './assets/css/common.css'
 import globalMixins from "./mixin/global_mixin.js"
 //引入全局校验js..
 import verify from './verify/index';
+import axios from './axios'
 //引入api..
 import api from './axios/api';
 //引入过滤器
 import filters from './filters';
- for(let item in filters){
-     Vue.filter(item, filters[item])
- }
+
+for (let item in filters) {
+    Vue.filter(item, filters[item])
+}
 
 Vue.use(ElementUI);
 Vue.mixin(globalMixins);
 Vue.prototype.$verifys = verify;
 Vue.prototype.$api = api;
+Vue.prototype.$axios = axios;
 
+import upload from './components/upload.vue';
+
+Vue.component('CmUpload', upload);
 
 import Router from 'vue-router'
 

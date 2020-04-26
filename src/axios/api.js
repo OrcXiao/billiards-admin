@@ -1,6 +1,8 @@
 import axios from './index';
 
+
 const api = {
+    uploadUrl: axios.defaults.baseURL + '/oss/upload',
     //公共请求方法
     commonApi: {
         // 获取全部省份城市信息
