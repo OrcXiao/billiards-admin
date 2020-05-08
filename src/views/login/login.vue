@@ -48,108 +48,108 @@
 </template>
 
 <script>
-    export default {
-        name: "login",
-        data() {
-            return {
-                verificationCode: '',
-                login: {
-                    user: '',
-                    password: '',
-                    authCode: '',
-                },
-                loginRules: {
-                    user: [
-                        {required: true, message: '请输入账号', trigger: 'blur'},
-                    ],
-                    password: [
-                        {required: true, message: '请输入密码', trigger: 'blur'},
-                    ],
-                    authCode: [
-                        {required: true, message: '请输入验证码', trigger: 'blur'},
-                    ],
-                },
-                activeName: '1',
-                register: {
-                    user: '',
-                    password: '',
-                },
-                btnLoginState: false,
-            }
+  export default {
+    name: "login",
+    data() {
+      return {
+        verificationCode: '',
+        login: {
+          user: '',
+          password: '',
+          authCode: '',
         },
-        computed: {},
-        created() {
+        loginRules: {
+          user: [
+            {required: true, message: '请输入账号', trigger: 'blur'},
+          ],
+          password: [
+            {required: true, message: '请输入密码', trigger: 'blur'},
+          ],
+          authCode: [
+            {required: true, message: '请输入验证码', trigger: 'blur'},
+          ],
         },
-        mounted() {
-            localStorage.clear();
-            this.getAuthCode();
+        activeName: '1',
+        register: {
+          user: '',
+          password: '',
         },
-        methods: {
-            //获取验证码
-            getAuthCode() {
-                let params = {
-                    with: 100,
-                    height: 40,
-                };
-                this.$api.login.getCode(params).then(res => {
-                    return 'data:image/png;base64,' + btoa(
-                        new Uint8Array(res.data).reduce((data, byte) => data + String.fromCharCode(byte), '')
-                    );
-                }).then(data => {
-                    this.verificationCode = data;
-                });
+        btnLoginState: false,
+      }
+    },
+    computed: {},
+    created() {
+    },
+    mounted() {
+      localStorage.clear();
+      this.getAuthCode();
+    },
+    methods: {
+      //获取验证码
+      getAuthCode() {
+        let params = {
+          with: 100,
+          height: 40,
+        };
+        this.$api.login.getCode(params).then(res => {
+          return 'data:image/png;base64,' + btoa(
+            new Uint8Array(res.data).reduce((data, byte) => data + String.fromCharCode(byte), '')
+          );
+        }).then(data => {
+          this.verificationCode = data;
+        });
 
-            },
-            //切换选项卡
-            handleClick(tab, event) {
-                this.login = {
-                    user: '',
-                    password: '',
-                };
-                this.register = {
-                    user: '',
-                    password: '',
-                };
-                this.$refs['login'].resetFields();
-                this.$refs['register'].resetFields();
-            },
-            //点击登录
-            submitLogin(formName) {
-                this.$refs[formName].validate((valid) => {
-                    if (valid) {
-                        this.btnLoginState = true;
-                        let params = {
-                            account: this.login.user,
-                            password: this.login.password,
-                            randcheckcode: this.login.authCode,
-                        };
-                        this.$api.login.selectUser(params).then(res => {
-                            this.btnLoginState = false;
-                            this.getAuthCode();
-                            if (res.data.resultCode === 0) {
-                                localStorage.setItem('userLoginLog', this.login.user + new Date().getTime() + '');
-                                this.$message.success('登录成功');
-                                this.$router.push('/admin');
-                            }
-                        });
-                    }
-                });
-            },
-            //点击注册
-            submitRegister(formName) {
-                this.$refs[formName].validate((valid) => {
-                    if (valid) {
+      },
+      //切换选项卡
+      handleClick(tab, event) {
+        this.login = {
+          user: '',
+          password: '',
+        };
+        this.register = {
+          user: '',
+          password: '',
+        };
+        this.$refs['login'].resetFields();
+        this.$refs['register'].resetFields();
+      },
+      //点击登录
+      submitLogin(formName) {
+        this.$refs[formName].validate((valid) => {
+          if (valid) {
+            this.btnLoginState = true;
+            let params = {
+              account: this.login.user,
+              password: this.login.password,
+              randcheckcode: this.login.authCode,
+            };
+            this.$api.login.selectUser(params).then(res => {
+              this.btnLoginState = false;
+              this.getAuthCode();
+              if (res.data.resultCode === 0) {
+                localStorage.setItem('userLoginLog', this.login.user + new Date().getTime() + '');
+                this.$message.success('登录成功');
+                this.$router.push('/admin');
+              }
+            });
+          }
+        });
+      },
+      //点击注册
+      submitRegister(formName) {
+        this.$refs[formName].validate((valid) => {
+          if (valid) {
 
-                    }
-                });
-            },
-        },
-        props: {},
-        watch: {},
-        mixins: [],
-        filters: {},
-        components: {},
-    }
+          }
+        });
+      },
+    },
+    props: {},
+    watch: {},
+    mixins: [],
+    filters: {},
+    components: {},
+  }
 </script>
 
 <style lang="scss" scoped>

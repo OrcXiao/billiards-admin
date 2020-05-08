@@ -73,68 +73,68 @@
 </template>
 
 <script>
-    export default {
-        name: "admin",
-        data() {
-            return {
-                defaultActive: '/'
-            }
-        },
-        computed: {},
-        created() {
-        },
-        mounted() {
-            this.$nextTick(() => {
-                this.defaultActive = this.$route.path || '/admin';
-                this.getAllCity();
-            })
-        },
-        methods: {
-            //获取全部省份城市信息
-            getAllCity() {
-                this.$api.commonApi.getAllCity().then(res => {
-                    if (res.data && res.data.resultCode === 0) {
-                        let data = res.data.data;
-                        res.data.data.forEach((item, index) => {
-                            item.children.forEach((itemIn, indexIn) => {
-                                itemIn.children.forEach((itemInIn, indexInIn) => {
-                                    delete itemInIn.children
-                                })
-                            })
-                        });
-                        this.$store.commit('SET_ALL_CITY', data);
-                    }
-                });
-            },
-            //右上角菜单
-            handleCommand(command) {
-                switch (command) {
-                    case 'logout':
-                        // ;
-                        this.quit();
-                        break;
-                    case 'register':
-                        this.$router.push('/register');
-                        break;
-                }
-            },
-            //退出
-            quit() {
-                this.$api.login.logout().then(res => {
-                    if (res.data && res.data.resultCode === 0) {
-                        this.$router.push('/')
-                    }
-                });
+  export default {
+    name: "admin",
+    data() {
+      return {
+        defaultActive: '/'
+      }
+    },
+    computed: {},
+    created() {
+    },
+    mounted() {
+      this.$nextTick(() => {
+        this.defaultActive = this.$route.path || '/admin';
+        this.getAllCity();
+      })
+    },
+    methods: {
+      //获取全部省份城市信息
+      getAllCity() {
+        this.$api.commonApi.getAllCity().then(res => {
+          if (res.data && res.data.resultCode === 0) {
+            let data = res.data.data;
+            res.data.data.forEach((item, index) => {
+              item.children.forEach((itemIn, indexIn) => {
+                itemIn.children.forEach((itemInIn, indexInIn) => {
+                  delete itemInIn.children
+                })
+              })
+            });
+            this.$store.commit('SET_ALL_CITY', data);
+          }
+        });
+      },
+      //右上角菜单
+      handleCommand(command) {
+        switch (command) {
+          case 'logout':
+            // ;
+            this.quit();
+            break;
+          case 'register':
+            this.$router.push('/register');
+            break;
+        }
+      },
+      //退出
+      quit() {
+        this.$api.login.logout().then(res => {
+          if (res.data && res.data.resultCode === 0) {
+            this.$router.push('/')
+          }
+        });
 
-            },
+      },
 
-        },
-        props: {},
-        watch: {},
-        mixins: [],
-        filters: {},
-        components: {},
-    }
+    },
+    props: {},
+    watch: {},
+    mixins: [],
+    filters: {},
+    components: {},
+  }
 </script>
 
 <style lang="scss" scoped>

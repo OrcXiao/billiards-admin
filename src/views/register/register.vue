@@ -50,10 +50,10 @@
             };
             return {
                 register: {
-                    account: 'orcxiao',
-                    password: '123qwe',
-                    agnPassword: '123qwe',
-                    phone: '15828015149',
+                    account: '',
+                    password: '',
+                    agnPassword: '',
+                    phone: '',
                 },
                 registerRules: {
                     account: [

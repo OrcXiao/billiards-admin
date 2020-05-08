@@ -46,7 +46,16 @@
                 label="资讯类型">
         </el-table-column>
         <el-table-column
-                width="220"
+                width="260"
+                label="缩略图">
+          <template slot-scope="scope">
+            <div class="thumbnail-wrap">
+              <img class="hg100 wd100" :src="scope.row.imgUrl" alt="">
+            </div>
+          </template>
+        </el-table-column>
+        <el-table-column
+                width="180"
                 label="创建时间">
           <template slot-scope="scope">
             {{scope.row.createDate | Filter_FormatDate}}
@@ -129,223 +138,223 @@
 </template>
 
 <script>
-    // import upload from '../../components/upload.vue';
+  // import upload from '../../components/upload.vue';
 
-    export default {
-        name: "information",
-        data() {
-            return {
-                //搜索条件
-                condition: {
-                    title: '',
-                    timeRang: null
-                },
-                //表格数据
-                tableData: [],
-                //显示弹框
-                isShowInfoDialog: false,
-                //资讯obj
-                info: {
-                    //资讯id
-                    id: '',
-                    //标题
-                    title: '',
-                    //详情
-                    details: '',
-                    //点赞数
-                    praisePoints: '',
-                    //阅读数
-                    readNumber: '',
-                    //类型
-                    type: '',
-                    //资讯图片
-                    img: ''
-                },
-                //规则校验
-                infoRules: {
-                    title: [
-                        {
-                            required: true,
-                            validator: this.$verifys.nullStr({item: '资讯标题'}),
-                            trigger: 'blur'
-                        },
-                    ],
-                    details: [
-                        {
-                            required: true,
-                            validator: this.$verifys.nullStr({item: '资讯详情'}),
-                            trigger: 'blur'
-                        },
-                    ],
-                    praisePoints: [
-                        {
-                            required: true,
-                            validator: this.$verifys.nullStr({item: '点赞数'}),
-                            trigger: 'blur'
-                        },
-                    ],
-                    type: [
-                        {
-                            required: true,
-                            validator: this.$verifys.nullStr({item: '资讯类型'}),
-                            trigger: 'change'
-                        },
-                    ],
-                    readNumber: [
-                        {
-                            required: true,
-                            validator: this.$verifys.nullStr({item: '阅读数'}),
-                            trigger: 'blur'
-                        },
-                    ],
-                    img: [
-                        {
-                            required: true,
-                            validator: this.$verifys.nullStr({item: '资讯标题图片'}),
-                            trigger: 'change'
-                        },
-                    ],
-                },
-                //当前操作状态(edit->编辑, add->新增)
-                currentHandle: '',
-                submitButtonLoading: false,
-            }
+  export default {
+    name: "information",
+    data() {
+      return {
+        //搜索条件
+        condition: {
+          title: '',
+          timeRang: null
         },
-        computed: {},
-        created() {
+        //表格数据
+        tableData: [],
+        //显示弹框
+        isShowInfoDialog: false,
+        //资讯obj
+        info: {
+          //资讯id
+          id: '',
+          //标题
+          title: '',
+          //详情
+          details: '',
+          //点赞数
+          praisePoints: '',
+          //阅读数
+          readNumber: '',
+          //类型
+          type: '',
+          //资讯图片
+          img: ''
         },
-        mounted() {
-            this.$nextTick(() => {
-                this.initData();
-            })
+        //规则校验
+        infoRules: {
+          title: [
+            {
+              required: true,
+              validator: this.$verifys.nullStr({item: '资讯标题'}),
+              trigger: 'blur'
+            },
+          ],
+          details: [
+            {
+              required: true,
+              validator: this.$verifys.nullStr({item: '资讯详情'}),
+              trigger: 'blur'
+            },
+          ],
+          praisePoints: [
+            {
+              required: true,
+              validator: this.$verifys.nullStr({item: '点赞数'}),
+              trigger: 'blur'
+            },
+          ],
+          type: [
+            {
+              required: true,
+              validator: this.$verifys.nullStr({item: '资讯类型'}),
+              trigger: 'change'
+            },
+          ],
+          readNumber: [
+            {
+              required: true,
+              validator: this.$verifys.nullStr({item: '阅读数'}),
+              trigger: 'blur'
+            },
+          ],
+          img: [
+            {
+              required: true,
+              validator: this.$verifys.nullStr({item: '资讯标题图片'}),
+              trigger: 'change'
+            },
+          ],
         },
-        methods: {
-            //获取数据
-            initData() {
-                let params = {
-                    title: this.condition.title,
-                    currentPage: this.Mixin_currentPage,
-                    pageSize: this.Mixin_pageSize,
-                };
-                if (this.condition.timeRang) {
-                    params.startDate = this.condition.timeRang[0];
-                    params.stopDate = this.condition.timeRang[1];
+        //当前操作状态(edit->编辑, add->新增)
+        currentHandle: '',
+        submitButtonLoading: false,
+      }
+    },
+    computed: {},
+    created() {
+    },
+    mounted() {
+      this.$nextTick(() => {
+        this.initData();
+      })
+    },
+    methods: {
+      //获取数据
+      initData() {
+        let params = {
+          title: this.condition.title,
+          currentPage: this.Mixin_currentPage,
+          pageSize: this.Mixin_pageSize,
+        };
+        if (this.condition.timeRang) {
+          params.startDate = this.condition.timeRang[0];
+          params.stopDate = this.condition.timeRang[1];
+        }
+        this.$api.information.getInfoList(params).then(res => {
+          if (res.data && res.data.resultCode === 0) {
+            res.data.data.records.forEach((item, index) => {
+              item.buttonLoading = false;
+            });
+            this.tableData = res.data.data.records;
+            this.Mixin_total = res.data.data.total;
+          }
+        });
+      },
+      //点击新增按钮
+      clickAddBtn() {
+        this.currentHandle = 'add';
+        this.info.title = '';
+        this.info.details = '';
+        this.info.praisePoints = '';
+        this.info.readNumber = '';
+        this.info.type = '';
+        this.info.img = '';
+        this.isShowInfoDialog = true;
+      },
+      //点击编辑按钮
+      clickEditBtn(row) {
+        this.currentHandle = 'edit';
+        this.info.id = row.id;
+        row.buttonLoading = true;
+        this.$api.information.getInformationById(row.id).then(res => {
+          row.buttonLoading = false;
+          if (res.data && res.data.resultCode === 0) {
+            let data = res.data.data;
+            this.isShowInfoDialog = true;
+            this.info.title = data.title;
+            this.info.details = data.context;
+            this.info.praisePoints = data.praisePoints;
+            this.info.readNumber = data.readNumber;
+            this.info.type = data.type;
+            this.info.img = data.imgUrl;
+          }
+        });
+      },
+      //上传成功
+      uploadSuccess(data) {
+        this.info.img = data.imgSrc;
+      },
+      //提交资讯
+      submitInfoBtn(formName) {
+        this.$refs[formName].validate(async valid => {
+          if (valid) {
+            this.submitButtonLoading = true;
+            if (this.currentHandle === 'add') {
+              //新增资讯
+              let params = {
+                context: this.info.details,
+                title: this.info.title,
+                praisePoints: this.info.praisePoints,
+                readNumber: this.info.readNumber,
+                type: this.info.type,
+                showFlag: false,
+                imgUrl: this.info.img,
+              };
+              this.$api.information.addInformation(params).then(res => {
+                this.submitButtonLoading = false;
+                if (res.data && res.data.resultCode === 0) {
+                  this.$message.success('新增资讯成功');
+                  this.initData();
+                  this.isShowInfoDialog = false;
                 }
-                this.$api.information.getInfoList(params).then(res => {
-                    if (res.data && res.data.resultCode === 0) {
-                        res.data.data.records.forEach((item, index) => {
-                            item.buttonLoading = false;
-                        });
-                        this.tableData = res.data.data.records;
-                        this.Mixin_total = res.data.data.total;
-                    }
-                });
-            },
-            //点击新增按钮
-            clickAddBtn() {
-                this.currentHandle = 'add';
-                this.info.title = '';
-                this.info.details = '';
-                this.info.praisePoints = '';
-                this.info.readNumber = '';
-                this.info.type = '';
-                this.info.img = '';
-                this.isShowInfoDialog = true;
-            },
-            //点击编辑按钮
-            clickEditBtn(row) {
-                this.currentHandle = 'edit';
-                this.info.id = row.id;
-                row.buttonLoading = true;
-                this.$api.information.getInformationById(row.id).then(res => {
-                    row.buttonLoading = false;
-                    if (res.data && res.data.resultCode === 0) {
-                        let data = res.data.data;
-                        this.isShowInfoDialog = true;
-                        this.info.title = data.title;
-                        this.info.details = data.context;
-                        this.info.praisePoints = data.praisePoints;
-                        this.info.readNumber = data.readNumber;
-                        this.info.type = data.type;
-                        this.info.img = data.imgUrl;
-                    }
-                });
-            },
-            //上传成功
-            uploadSuccess(data) {
-                this.info.img = data.imgSrc;
-            },
-            //提交资讯
-            submitInfoBtn(formName) {
-                this.$refs[formName].validate(async valid => {
-                    if (valid) {
-                        this.submitButtonLoading = true;
-                        if (this.currentHandle === 'add') {
-                            //新增资讯
-                            let params = {
-                                context: this.info.details,
-                                title: this.info.title,
-                                praisePoints: this.info.praisePoints,
-                                readNumber: this.info.readNumber,
-                                type: this.info.type,
-                                showFlag: false,
-                                imgUrl: this.info.img,
-                            };
-                            this.$api.information.addInformation(params).then(res => {
-                                this.submitButtonLoading = false;
-                                if (res.data && res.data.resultCode === 0) {
-                                    this.$message.success('新增资讯成功');
-                                    this.initData();
-                                    this.isShowInfoDialog = false;
-                                }
-                            });
-                        } else {
-                            //编辑资讯
-                            let params = {
-                                id: this.info.id,
-                                context: this.info.details,
-                                title: this.info.title,
-                                praisePoints: this.info.praisePoints,
-                                readNumber: this.info.readNumber,
-                                type: this.info.type,
-                                showFlag: false,
-                                imgUrl: this.info.img,
-                            };
-                            this.$api.information.addInformation(params).then(res => {
-                                this.submitButtonLoading = false;
-                                if (res.data && res.data.resultCode === 0) {
-                                    this.$message.success('修改资讯成功');
-                                    this.initData();
-                                    this.isShowInfoDialog = false;
-                                }
-                            });
-                        }
-                    }
-                })
-            },
-            //点击启用/禁用按钮
-            clickStartOrEndBtn(row, type) {
-                this.$confirm(`确定${type === 'start' ? '启用' : '禁用'}当前资讯 ?`, '', {
-                    confirmButtonText: '确定',
-                    cancelButtonText: '取消',
-                    type: 'warning'
-                }).then(() => {
-                    this.$api.information.updateShow(row.id).then(res => {
-                        if (res.data && res.data.resultCode === 0) {
-                            this.$message.success(`资讯${type === 'start' ? '启用' : '禁用'}成功`);
-                            this.initData();
-                        }
-                    });
-                }).catch(() => {
-                });
-            },
-        },
-        props: {},
-        watch: {},
-        mixins: [],
-        filters: {},
-        components: {},
-    }
+              });
+            } else {
+              //编辑资讯
+              let params = {
+                id: this.info.id,
+                context: this.info.details,
+                title: this.info.title,
+                praisePoints: this.info.praisePoints,
+                readNumber: this.info.readNumber,
+                type: this.info.type,
+                showFlag: false,
+                imgUrl: this.info.img,
+              };
+              this.$api.information.addInformation(params).then(res => {
+                this.submitButtonLoading = false;
+                if (res.data && res.data.resultCode === 0) {
+                  this.$message.success('修改资讯成功');
+                  this.initData();
+                  this.isShowInfoDialog = false;
+                }
+              });
+            }
+          }
+        })
+      },
+      //点击启用/禁用按钮
+      clickStartOrEndBtn(row, type) {
+        this.$confirm(`确定${type === 'start' ? '启用' : '禁用'}当前资讯 ?`, '', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+          this.$api.information.updateShow(row.id).then(res => {
+            if (res.data && res.data.resultCode === 0) {
+              this.$message.success(`资讯${type === 'start' ? '启用' : '禁用'}成功`);
+              this.initData();
+            }
+          });
+        }).catch(() => {
+        });
+      },
+    },
+    props: {},
+    watch: {},
+    mixins: [],
+    filters: {},
+    components: {},
+  }
 </script>
 
 <style lang="scss" scoped>

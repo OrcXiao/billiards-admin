@@ -41,7 +41,17 @@
                 label="教程标题">
         </el-table-column>
         <el-table-column
-                width="220"
+                width="260"
+                label="缩略图">
+          <template slot-scope="scope">
+            <div class="thumbnail-wrap">
+              <img class="hg100 wd100" :src="scope.row.imgUrl" alt="">
+            </div>
+          </template>
+        </el-table-column>
+
+        <el-table-column
+                width="180"
                 label="创建时间">
           <template slot-scope="scope">
             {{scope.row.createDate | Filter_FormatDate}}

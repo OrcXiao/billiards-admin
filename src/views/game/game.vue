@@ -35,24 +35,35 @@
         <el-table-column
                 prop="id"
                 label="赛讯ID"
-                width="180">
+                >
         </el-table-column>
         <el-table-column
                 prop="title"
                 label="赛讯标题"
-                width="180">
+                >
         </el-table-column>
         <el-table-column
                 prop="peopleNumber"
                 label="赛讯人数"
-                width="180">
+                >
         </el-table-column>
         <el-table-column
                 prop="money"
                 label="总奖金"
-                width="180">
+                >
         </el-table-column>
         <el-table-column
+                width="260"
+                label="缩略图">
+          <template slot-scope="scope">
+            <div class="thumbnail-wrap">
+              <img class="hg100 wd100" :src="scope.row.imgUrl" alt="">
+            </div>
+          </template>
+        </el-table-column>
+
+        <el-table-column
+                width="180"
                 label="创建时间">
           <template slot-scope="scope">
             {{scope.row.createDate | Filter_FormatDate}}
@@ -121,138 +132,138 @@
 </template>
 
 <script>
-    export default {
-        name: "information",
-        data() {
-            return {
-                //搜索条件
-                condition: {
-                    title: '',
-                    createTime: ''
-                },
-                //表格数据
-                tableData: [],
-                //显示弹框
-                isShowGameDialog: false,
-                //赛讯obj
-                info: {
-                    //标题
-                    title: '',
-                    //详情
-                    details: '',
-                    //赛讯图片
-                    img: ''
-                },
-                //规则校验
-                infoRules: {
-                    title: [
-                        {
-                            required: true,
-                            validator: this.$verifys.nullStr({item: '赛讯标题'}),
-                            trigger: 'blur'
-                        },
-                    ],
-                    details: [
-                        {
-                            required: true,
-                            validator: this.$verifys.nullStr({item: '赛讯详情'}),
-                            trigger: 'blur'
-                        },
-                    ],
-                    img: [
-                        {
-                            required: true,
-                            validator: this.$verifys.nullStr({item: '赛讯标题图片'}),
-                            trigger: 'change'
-                        },
-                    ],
-                },
-                //当前操作状态(edit->编辑, add->新增)
-                currentHandle: '',
+  export default {
+    name: "information",
+    data() {
+      return {
+        //搜索条件
+        condition: {
+          title: '',
+          createTime: ''
+        },
+        //表格数据
+        tableData: [],
+        //显示弹框
+        isShowGameDialog: false,
+        //赛讯obj
+        info: {
+          //标题
+          title: '',
+          //详情
+          details: '',
+          //赛讯图片
+          img: ''
+        },
+        //规则校验
+        infoRules: {
+          title: [
+            {
+              required: true,
+              validator: this.$verifys.nullStr({item: '赛讯标题'}),
+              trigger: 'blur'
+            },
+          ],
+          details: [
+            {
+              required: true,
+              validator: this.$verifys.nullStr({item: '赛讯详情'}),
+              trigger: 'blur'
+            },
+          ],
+          img: [
+            {
+              required: true,
+              validator: this.$verifys.nullStr({item: '赛讯标题图片'}),
+              trigger: 'change'
+            },
+          ],
+        },
+        //当前操作状态(edit->编辑, add->新增)
+        currentHandle: '',
+      }
+    },
+    computed: {},
+    created() {
+    },
+    mounted() {
+      this.$nextTick(() => {
+        this.initData();
+      })
+    },
+    methods: {
+      //获取数据
+      initData() {
+        let params = {
+          title: this.condition.title,
+          currentPage: this.Mixin_currentPage,
+          pageSize: this.Mixin_pageSize,
+        };
+        if (this.condition.timeRang) {
+          params.startDate = this.condition.timeRang[0];
+          params.stopDate = this.condition.timeRang[1];
+        }
+        this.$api.game.getContests(params).then(res => {
+          if (res.data && res.data.resultCode === 0) {
+            res.data.data.records.forEach((item, index) => {
+              item.buttonLoading = false;
+            });
+            this.tableData = res.data.data.records;
+            this.Mixin_total = res.data.data.total;
+          }
+        });
+      },
+      //点击新增按钮
+      clickAddBtn() {
+        this.currentHandle = 'add';
+        this.isShowGameDialog = true;
+      },
+      //点击编辑按钮
+      clickEditBtn() {
+        this.currentHandle = 'edit';
+        this.isShowGameDialog = true;
+      },
+
+      //上传成功
+      uploadSuccess(data) {
+        this.info.img = data.imgSrc;
+      },
+
+      //提交赛讯
+      submitInfoBtn(formName) {
+        this.$refs[formName].validate(async valid => {
+          if (valid) {
+            if (this.currentHandle === 'add') {
+
+            } else {
+
             }
-        },
-        computed: {},
-        created() {
-        },
-        mounted() {
-            this.$nextTick(() => {
-                this.initData();
-            })
-        },
-        methods: {
-            //获取数据
-            initData() {
-                let params = {
-                    title: this.condition.title,
-                    currentPage: this.Mixin_currentPage,
-                    pageSize: this.Mixin_pageSize,
-                };
-                if (this.condition.timeRang) {
-                    params.startDate = this.condition.timeRang[0];
-                    params.stopDate = this.condition.timeRang[1];
-                }
-                this.$api.game.getContests(params).then(res => {
-                    if (res.data && res.data.resultCode === 0) {
-                        res.data.data.records.forEach((item, index) => {
-                            item.buttonLoading = false;
-                        });
-                        this.tableData = res.data.data.records;
-                        this.Mixin_total = res.data.data.total;
-                    }
-                });
-            },
-            //点击新增按钮
-            clickAddBtn() {
-                this.currentHandle = 'add';
-                this.isShowGameDialog = true;
-            },
-            //点击编辑按钮
-            clickEditBtn() {
-                this.currentHandle = 'edit';
-                this.isShowGameDialog = true;
-            },
+          }
+        })
+      },
+      //点击启用/禁用按钮
+      clickStartOrEndBtn(row, type) {
+        this.$confirm(`确定${type === 'start' ? '启用' : '禁用'}当前赛讯 ?`, '', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+          if (type === 'start') {
 
-            //上传成功
-            uploadSuccess(data) {
-                this.info.img = data.imgSrc;
-            },
+          } else {
 
-            //提交赛讯
-            submitInfoBtn(formName) {
-                this.$refs[formName].validate(async valid => {
-                    if (valid) {
-                        if (this.currentHandle === 'add') {
+          }
 
-                        } else {
+        }).catch(() => {
 
-                        }
-                    }
-                })
-            },
-            //点击启用/禁用按钮
-            clickStartOrEndBtn(row, type) {
-                this.$confirm(`确定${type === 'start' ? '启用' : '禁用'}当前赛讯 ?`, '', {
-                    confirmButtonText: '确定',
-                    cancelButtonText: '取消',
-                    type: 'warning'
-                }).then(() => {
-                    if (type === 'start') {
-
-                    } else {
-
-                    }
-
-                }).catch(() => {
-
-                });
-            },
-        },
-        props: {},
-        watch: {},
-        mixins: [],
-        filters: {},
-        components: {},
-    }
+        });
+      },
+    },
+    props: {},
+    watch: {},
+    mixins: [],
+    filters: {},
+    components: {},
+  }
 </script>
 
 <style lang="scss" scoped>
