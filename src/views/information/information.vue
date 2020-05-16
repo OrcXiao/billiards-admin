@@ -1,6 +1,10 @@
 <template>
   <div class="information-wrap">
     <div>
+<!--      <el-input @input.native="limitInput($event, info.readNumber, 3, 2)" v-model.trim="info.readNumber"></el-input>-->
+    </div>
+    <br>
+    <div>
       <el-form :inline="true">
         <el-form-item label="标题:">
           <el-input v-model.trim="condition.title" clearable placeholder="请输入标题"></el-input>
@@ -138,7 +142,6 @@
 </template>
 
 <script>
-  // import upload from '../../components/upload.vue';
 
   export default {
     name: "information",
@@ -348,12 +351,30 @@
         }).catch(() => {
         });
       },
+      //限制输入
+      limitInput(event, obj, before, after) {
+        let value = event.target.value;
+        value = value.replace(/[^ \d.]|\s|^\./g, "");
+        value = value.replace(/\.{2,}/g, ".");
+        value = value.replace(".", "$#$").replace(/\./g, "").replace("$#$", ".");
+        console.log(value.split("."));
+        if (after) {
+          value = value.split(".")[0].slice(0, before) + "." + value.split(".")[1] ? value.split(".")[1].slice(0, after) : '';
+        } else {
+          value = value.slice(0, before);
+        }
+        event.target.value = value;
+
+        obj = event.target.value;
+        console.log(obj);
+      },
     },
     props: {},
     watch: {},
     mixins: [],
     filters: {},
     components: {},
+    directives: {},
   }
 </script>
 

@@ -35,22 +35,22 @@
         <el-table-column
                 prop="id"
                 label="赛讯ID"
-                >
+        >
         </el-table-column>
         <el-table-column
                 prop="title"
                 label="赛讯标题"
-                >
+        >
         </el-table-column>
         <el-table-column
                 prop="peopleNumber"
                 label="赛讯人数"
-                >
+        >
         </el-table-column>
         <el-table-column
                 prop="money"
                 label="总奖金"
-                >
+        >
         </el-table-column>
         <el-table-column
                 width="260"
@@ -99,8 +99,12 @@
         <el-form-item label="赛讯标题 :" prop="title">
           <el-input maxlength="20" placeholder="请输入赛讯标题" v-model.trim="info.title"></el-input>
         </el-form-item>
-        <el-form-item label="赛讯详情 :" prop="details">
-          <el-input maxlength="100" type="textarea" placeholder="请输入赛讯详情" v-model.trim="info.details"></el-input>
+        <el-form-item label="赛事城市 :" prop="city">
+          <el-cascader class="wd100" placeholder="请选择赛事城市" v-model.trim="info.city" :options="options"
+                       :props="props"></el-cascader>
+        </el-form-item>
+        <el-form-item label="比赛详细地址 :" prop="address">
+          <el-input maxlength="20" placeholder="请输入比赛详细地址" v-model.trim="info.address"></el-input>
         </el-form-item>
         <el-form-item label="点赞数 :" prop="fabulousNumber">
           <el-input placeholder="请输入点赞数" v-model.trim="info.fabulousNumber"></el-input>
@@ -108,11 +112,32 @@
         <el-form-item label="总奖金 :" prop="money">
           <el-input placeholder="请输入总奖金" v-model.trim="info.money"></el-input>
         </el-form-item>
+        <el-form-item label="比赛球房id :" prop="play_room">
+          <el-input placeholder="请输入比赛球房id" v-model.trim="info.play_room"></el-input>
+        </el-form-item>
+        <el-form-item label="比赛时间 :" prop="play_time">
+          <el-date-picker
+                  class="wd100"
+                  v-model="info.play_time"
+                  type="datetime"
+                  placeholder="选择比赛时间">
+          </el-date-picker>
+        </el-form-item>
         <el-form-item label="参赛人数 :" prop="peopleNumber">
           <el-input placeholder="请输入参赛人数" v-model.trim="info.peopleNumber"></el-input>
         </el-form-item>
         <el-form-item label="赛事状态 :" prop="state">
-          <el-input placeholder="请输入赛事状态" v-model.trim="info.state"></el-input>
+          <el-select class="wd100" v-model="info.state" placeholder="请选择赛事状态">
+            <el-option label="待开始" value="0"></el-option>
+            <el-option label="进行中" value="1"></el-option>
+            <el-option label="已结束" value="2"></el-option>
+          </el-select>
+        </el-form-item>
+        <el-form-item label="是否展示 :" prop="showFlag">
+          <el-radio-group v-model="info.showFlag">
+            <el-radio label="0" border>展示</el-radio>
+            <el-radio label="1" border>不展示</el-radio>
+          </el-radio-group>
         </el-form-item>
         <el-form-item label="赛讯标题图片  :" prop="img">
           <CmUpload
@@ -120,6 +145,9 @@
                   :initObj="info.img"
                   @uploadSuccess="uploadSuccess">
           </CmUpload>
+        </el-form-item>
+        <el-form-item label="赛讯详情 :" prop="details">
+          <el-input maxlength="100" type="textarea" placeholder="请输入赛讯详情" v-model.trim="info.details"></el-input>
         </el-form-item>
       </el-form>
       <div class="mt10 dis-fl ju-ct">
@@ -136,6 +164,11 @@
     name: "information",
     data() {
       return {
+        props: {
+          value: 'text',
+          label: 'text',
+          children: 'children'
+        },
         //搜索条件
         condition: {
           title: '',
@@ -149,10 +182,29 @@
         info: {
           //标题
           title: '',
+          //城市
+          city: '',
+          //详细地址
+          address: '',
+          //点赞数
+          fabulousNumber: '',
+          //总奖金
+          money: '',
+          //比赛球房id
+          play_room: '',
+          //比赛时间
+          play_time: '',
+          //参赛人数
+          peopleNumber: '',
+          //赛事状态
+          state: '',
+          //是否展示
+          showFlag: '',
           //详情
           details: '',
           //赛讯图片
-          img: ''
+          img: '',
+
         },
         //规则校验
         infoRules: {
@@ -161,6 +213,69 @@
               required: true,
               validator: this.$verifys.nullStr({item: '赛讯标题'}),
               trigger: 'blur'
+            },
+          ],
+          city: [
+            {
+              required: true,
+              validator: this.$verifys.nullStr({item: '赛事城市'}),
+              trigger: 'change'
+            },
+          ],
+          address: [
+            {
+              required: true,
+              validator: this.$verifys.nullStr({item: '比赛详细地址'}),
+              trigger: 'blur'
+            },
+          ],
+          fabulousNumber: [
+            {
+              required: true,
+              validator: this.$verifys.nullStr({item: '点赞数'}),
+              trigger: 'blur'
+            },
+          ],
+          money: [
+            {
+              required: true,
+              validator: this.$verifys.nullStr({item: '总奖金'}),
+              trigger: 'blur'
+            },
+          ],
+          play_room: [
+            {
+              required: true,
+              validator: this.$verifys.nullStr({item: '比赛球房id'}),
+              trigger: 'blur'
+            },
+          ],
+          play_time: [
+            {
+              required: true,
+              validator: this.$verifys.nullStr({item: '比赛时间'}),
+              trigger: 'blur'
+            },
+          ],
+          peopleNumber: [
+            {
+              required: true,
+              validator: this.$verifys.nullStr({item: '参赛人数'}),
+              trigger: 'blur'
+            },
+          ],
+          state: [
+            {
+              required: true,
+              validator: this.$verifys.nullStr({item: '赛事状态'}),
+              trigger: 'change'
+            },
+          ],
+          showFlag: [
+            {
+              required: true,
+              validator: this.$verifys.nullStr({item: '是否展示'}),
+              trigger: 'change'
             },
           ],
           details: [
@@ -182,7 +297,11 @@
         currentHandle: '',
       }
     },
-    computed: {},
+    computed: {
+      options: function () {
+        return this.$store.state.vx_allCity
+      }
+    },
     created() {
     },
     mounted() {
