@@ -52,15 +52,15 @@
                 label="总奖金"
         >
         </el-table-column>
-        <el-table-column
-                width="260"
-                label="缩略图">
-          <template slot-scope="scope">
-            <div class="thumbnail-wrap">
-              <img class="hg100 wd100" :src="scope.row.imgUrl" alt="">
-            </div>
-          </template>
-        </el-table-column>
+        <!--        <el-table-column-->
+        <!--                width="260"-->
+        <!--                label="缩略图">-->
+        <!--          <template slot-scope="scope">-->
+        <!--            <div class="thumbnail-wrap">-->
+        <!--              <img class="hg100 wd100" :src="scope.row.imgUrl" alt="">-->
+        <!--            </div>-->
+        <!--          </template>-->
+        <!--        </el-table-column>-->
 
         <el-table-column
                 width="180"
@@ -70,11 +70,22 @@
           </template>
         </el-table-column>
         <el-table-column
-                width="280"
+                width="100"
+                label="比赛状态">
+          <template slot-scope="scope">
+            <span v-if="scope.row.state === '0'">待开始</span>
+            <span v-if="scope.row.state === '1'">进行中</span>
+            <span v-if="scope.row.state === '2'">已结束</span>
+          </template>
+        </el-table-column>
+        <el-table-column
+                width="530"
                 prop="address"
                 label="操作">
           <template slot-scope="scope">
             <el-button :loading="scope.row.buttonLoading" @click="clickEditBtn(scope.row)" type="primary">编辑</el-button>
+            <el-button @click="clickChangeState(scope.row)">变更状态</el-button>
+            <el-button @click="clickRuleBtn(scope.row)">设置抽签规则</el-button>
             <el-button @click="clickManageBtn(scope.row)">管理</el-button>
             <el-button @click="clickRemoveBtn(scope.row)" type="danger">删除</el-button>
           </template>
@@ -91,6 +102,7 @@
         </el-col>
       </el-row>
     </div>
+
 
     <el-dialog
             :title="currentHandle === 'add' ? '新增赛讯': '编辑赛讯'"
@@ -111,16 +123,20 @@
         <el-form-item label="点赞数 :" prop="fabulousNumber">
           <el-input placeholder="请输入点赞数" v-model.trim="info.fabulousNumber"></el-input>
         </el-form-item>
+        <el-form-item label="报名金额 :" prop="enrollMoney">
+          <el-input placeholder="请输入报名金额" v-model.trim="info.enrollMoney"></el-input>
+        </el-form-item>
         <el-form-item label="总奖金 :" prop="money">
           <el-input placeholder="请输入总奖金" v-model.trim="info.money"></el-input>
         </el-form-item>
-        <el-form-item label="比赛球房id :" prop="play_room">
-          <el-input placeholder="请输入比赛球房id" v-model.trim="info.play_room"></el-input>
+        <el-form-item label="比赛球房id :" prop="playRoom">
+          <el-input placeholder="请输入比赛球房id" v-model.trim="info.playRoom"></el-input>
         </el-form-item>
-        <el-form-item label="比赛时间 :" prop="play_time">
+        <el-form-item label="比赛时间 :" prop="playTime">
           <el-date-picker
+                  value-format="timestamp"
                   class="wd100"
-                  v-model="info.play_time"
+                  v-model="info.playTime"
                   type="datetime"
                   placeholder="选择比赛时间">
           </el-date-picker>
@@ -128,17 +144,13 @@
         <el-form-item label="参赛人数 :" prop="peopleNumber">
           <el-input placeholder="请输入参赛人数" v-model.trim="info.peopleNumber"></el-input>
         </el-form-item>
-        <el-form-item label="赛事状态 :" prop="state">
-          <el-select class="wd100" v-model="info.state" placeholder="请选择赛事状态">
-            <el-option label="待开始" value="0"></el-option>
-            <el-option label="进行中" value="1"></el-option>
-            <el-option label="已结束" value="2"></el-option>
-          </el-select>
+        <el-form-item label="比赛进行天数 :" prop="playDays">
+          <el-input placeholder="请输入比赛进行天数" v-model.trim="info.playDays"></el-input>
         </el-form-item>
         <el-form-item label="是否展示 :" prop="showFlag">
           <el-radio-group v-model="info.showFlag">
-            <el-radio :label="true" border>展示</el-radio>
-            <el-radio :label="false" border>不展示</el-radio>
+            <el-radio label="true" border>展示</el-radio>
+            <el-radio label="false" border>不展示</el-radio>
           </el-radio-group>
         </el-form-item>
         <el-form-item label="赛讯标题图片  :" prop="imgUrl">
@@ -155,6 +167,52 @@
       <div class="mt10 dis-fl ju-ct">
         <el-button type="primary" @click="submitInfoBtn('info')">确定</el-button>
         <el-button @click="isShowGameDialog = false">取消</el-button>
+      </div>
+    </el-dialog>
+
+    <!--   变更比赛状态弹框-->
+    <el-dialog
+            title="变更比赛状态"
+            :visible.sync="isShowStateDialog"
+            @close="Mixin_dialogClose('state', 'isShowStateDialog')"
+            width="400px">
+      <el-form ref="state" :model="state" :rules="stateRules" label-width="120px">
+        <el-form-item label="赛事状态 :" prop="value">
+          <el-select class="wd100" v-model="state.value" placeholder="请选择赛事状态">
+            <el-option label="待开始" value="0"></el-option>
+            <el-option label="进行中" value="1"></el-option>
+            <el-option label="已结束" value="2"></el-option>
+          </el-select>
+        </el-form-item>
+      </el-form>
+      <div class="mt10 dis-fl ju-ct">
+        <el-button type="primary" @click="submitStateBtn('state')">确定</el-button>
+        <el-button @click="isShowStateDialog = false">取消</el-button>
+      </div>
+    </el-dialog>
+
+    <!--   设置抽签规则弹框-->
+    <el-dialog
+            title="设置抽签规则"
+            :visible.sync="isShowRuleDialog"
+            @close="Mixin_dialogClose('draw', 'isShowRuleDialog')"
+            width="700px">
+      <el-form ref="draw" :model="draw" :rules="drawRules" label-width="140px">
+        <el-form-item label="不参与抽签人 :" prop="value">
+          <el-checkbox-group v-model="draw.value">
+            <el-checkbox
+                    v-for="(item, index) in ruleList"
+                    :key="item.id"
+                    :label="item.id"
+                    name="type">
+              {{item.nickName}}
+            </el-checkbox>
+          </el-checkbox-group>
+        </el-form-item>
+      </el-form>
+      <div class="mt10 dis-fl ju-ct">
+        <el-button type="primary" @click="submitRuleBtn('draw')">确定</el-button>
+        <el-button @click="isShowRuleDialog = false">取消</el-button>
       </div>
     </el-dialog>
 
@@ -185,28 +243,31 @@
           //标题
           title: '',
           //城市
-          city: '',
+          city: [],
           //详细地址
           address: '',
           //点赞数
           fabulousNumber: '',
+          //报名金额
+          enrollMoney: '',
           //总奖金
           money: '',
           //比赛球房id
-          play_room: '',
+          playRoom: '',
           //比赛时间
-          play_time: '',
+          playTime: '',
           //参赛人数
           peopleNumber: '',
+          //比赛进行天数
+          playDays: '',
           //赛事状态
-          state: '',
+          state: 0,
           //是否展示
           showFlag: '',
           //详情
           context: '',
           //赛讯图片
           imgUrl: '',
-
         },
         //规则校验
         infoRules: {
@@ -238,6 +299,13 @@
               trigger: 'blur'
             },
           ],
+          enrollMoney: [
+            {
+              required: true,
+              validator: this.$verifys.nullStr({item: '报名金额'}),
+              trigger: 'blur'
+            },
+          ],
           money: [
             {
               required: true,
@@ -245,14 +313,14 @@
               trigger: 'blur'
             },
           ],
-          play_room: [
+          playRoom: [
             {
               required: true,
               validator: this.$verifys.nullStr({item: '比赛球房id'}),
               trigger: 'blur'
             },
           ],
-          play_time: [
+          playTime: [
             {
               required: true,
               validator: this.$verifys.nullStr({item: '比赛时间'}),
@@ -263,6 +331,13 @@
             {
               required: true,
               validator: this.$verifys.nullStr({item: '参赛人数'}),
+              trigger: 'blur'
+            },
+          ],
+          playDays: [
+            {
+              required: true,
+              validator: this.$verifys.nullStr({item: '比赛进行天数'}),
               trigger: 'blur'
             },
           ],
@@ -297,6 +372,38 @@
         },
         //当前操作状态(edit->编辑, add->新增)
         currentHandle: '',
+        //改变状态
+        isShowStateDialog: false,
+        stateId: '',
+        state: {
+          value: '',
+        },
+        stateRules: {
+          value: [
+            {
+              required: true,
+              validator: this.$verifys.nullStr({item: '赛事状态'}),
+              trigger: 'blur'
+            },
+          ],
+        },
+        //显示规则弹框
+        isShowRuleDialog: false,
+        ruleList: [],
+        draw: {
+          value: [],
+          id: '',
+        },
+        drawRules: {
+          value: [
+            {
+              type: 'array',
+              required: true,
+              validator: this.$verifys.nullStr({item: '不参与抽签人员'}),
+              trigger: 'change'
+            }
+          ],
+        },
       }
     },
     computed: {
@@ -336,8 +443,37 @@
       //点击新增按钮
       clickAddBtn() {
         this.currentHandle = 'add';
-        delete this.info.id;
         this.isShowGameDialog = true;
+        this.info = {
+          //标题
+          title: '',
+          //城市
+          city: null,
+          //详细地址
+          address: '',
+          //点赞数
+          fabulousNumber: '',
+          //报名金额
+          enrollMoney: '',
+          //总奖金
+          money: '',
+          //比赛球房id
+          playRoom: '',
+          //比赛时间
+          playTime: '',
+          //参赛人数
+          peopleNumber: '',
+          //比赛进行天数
+          playDays: '',
+          //赛事状态
+          state: 0,
+          //是否展示
+          showFlag: '',
+          //详情
+          context: '',
+          //赛讯图片
+          imgUrl: '',
+        }
       },
       //点击编辑按钮
       clickEditBtn(row) {
@@ -352,21 +488,32 @@
             this.info.context = data.context;
             this.info.imgUrl = data.imgUrl;
             this.info.fabulousNumber = data.fabulousNumber;
+            this.info.enrollMoney = data.enrollMoney;
             this.info.money = data.money;
             this.info.peopleNumber = data.peopleNumber;
-            this.info.play_room = data.playRoom;
-            this.info.play_time = data.playTime;
-            this.info.showFlag = data.showFlag;
+            this.info.playDays = data.playDays;
+            this.info.playRoom = data.playRoom;
+            this.info.playTime = data.playTime;
+            this.info.showFlag = data.showFlag + '';
             this.info.state = data.state;
             this.info.address = data.address;
+            this.info.city = [data.province, data.city, data.area];
 
             this.isShowGameDialog = true;
           }
         });
       },
+      //点击'变更比赛状态'
+      clickChangeState(row) {
+        this.state.value = row.state;
+        this.stateId = row.id;
+        this.isShowStateDialog = true;
+      },
+
       //点击'管理'按钮
       clickManageBtn(row) {
         this.$router.push('/gameManage?id=' + row.id);
+
       },
       //点击'删除'按钮
       clickRemoveBtn(row) {
@@ -378,7 +525,7 @@
           this.$api.game.delContest(row.id).then(res => {
             if (res.data && res.data.resultCode === 0) {
               this.$message.success('赛讯删除成功');
-              this.initData();
+              this.Mixin_handleCurrentChange(1);
             }
           });
         }).catch(() => {
@@ -394,49 +541,110 @@
           if (valid) {
             if (this.currentHandle === 'add') {
               let params = {};
+              params.province = this.info.city[0];
+              params.city = this.info.city[1];
+              params.area = this.info.city[2];
               params.address = this.info.address;
-              params.city = this.info.city ? this.info.city.join('') : '';
               params.context = this.info.context;
               params.fabulousNumber = this.info.fabulousNumber;
+              params.enrollMoney = this.info.enrollMoney;
               params.imgUrl = this.info.imgUrl;
               params.money = this.info.money;
               params.peopleNumber = this.info.peopleNumber;
-              params.play_room = this.info.play_room;
-              params.play_time = this.info.play_time;
-              params.showFlag = this.info.showFlag;
+              params.playDays = this.info.playDays;
+              params.playRoom = this.info.playRoom;
+              params.playTime = this.info.playTime;
+              params.showFlag = this.info.showFlag === 'true';
               params.state = this.info.state;
               params.title = this.info.title;
-
               this.$api.game.addContest(params).then(res => {
                 if (res.data && res.data.resultCode === 0) {
-                  this.$message.success('赛讯删除成功');
+                  this.$message.success('赛讯新增成功');
                   this.initData();
                   this.isShowGameDialog = false;
                 }
               });
 
             } else {
-
+              let params = {};
+              params.province = this.info.city[0];
+              params.city = this.info.city[1];
+              params.area = this.info.city[2];
+              params.address = this.info.address;
+              params.context = this.info.context;
+              params.fabulousNumber = this.info.fabulousNumber;
+              params.enrollMoney = this.info.enrollMoney;
+              params.imgUrl = this.info.imgUrl;
+              params.money = this.info.money;
+              params.peopleNumber = this.info.peopleNumber;
+              params.playDays = this.info.playDays;
+              params.playRoom = this.info.playRoom;
+              params.playTime = this.info.playTime;
+              params.showFlag = this.info.showFlag === 'true';
+              params.state = this.info.state;
+              params.title = this.info.title;
+              params.id = this.info.id;
+              this.$api.game.addContest(params).then(res => {
+                if (res.data && res.data.resultCode === 0) {
+                  this.$message.success('赛讯编辑成功');
+                  this.initData();
+                  this.isShowGameDialog = false;
+                }
+              });
             }
           }
         })
       },
-      //点击启用/禁用按钮
-      clickStartOrEndBtn(row, type) {
-        this.$confirm(`确定${type === 'start' ? '启用' : '禁用'}当前赛讯 ?`, '', {
-          confirmButtonText: '确定',
-          cancelButtonText: '取消',
-          type: 'warning'
-        }).then(() => {
-          if (type === 'start') {
-
-          } else {
-
+      //提交状态变更
+      submitStateBtn(formName) {
+        this.$refs[formName].validate(valid => {
+          if (valid) {
+            let params = {
+              id: this.stateId,
+              state: this.state.value,
+            };
+            this.$api.game.setContestState(params).then(res => {
+              if (res.data && res.data.resultCode === 0) {
+                this.$message.success('赛讯状态变更成功');
+                this.initData();
+                this.isShowStateDialog = false;
+              }
+            });
           }
-
-        }).catch(() => {
-
+        })
+      },
+      //点击设置抽签规则
+      clickRuleBtn(row) {
+        this.$api.game.getEnrollUser(row.id).then(res => {
+          if (res.data && res.data.resultCode === 0) {
+            let data = res.data.data;
+            this.ruleList = data;
+            if (data.length === 0) {
+              this.$message.warning('当前没有参与抽签的人员');
+            } else {
+              this.draw.id = row.id;
+              this.isShowRuleDialog = true;
+            }
+          }
         });
+      },
+      //设置抽签规则
+      submitRuleBtn(formName) {
+        this.$refs[formName].validate(valid => {
+          if (valid) {
+            let params = {
+              contestId: this.draw.id,
+              userIds: this.draw.value.join(','),
+            };
+            this.$api.game.notDrawUser(params).then(res => {
+              if (res.data && res.data.resultCode === 0) {
+                this.$message.success('设置抽签规则成功');
+                this.initData();
+                this.isShowRuleDialog = false;
+              }
+            });
+          }
+        })
       },
     },
     props: {},
