@@ -70,10 +70,12 @@
           </template>
         </el-table-column>
         <el-table-column
+                width="280"
                 prop="address"
                 label="操作">
           <template slot-scope="scope">
-            <el-button @click="clickEditBtn(scope.row)" type="primary">编辑</el-button>
+            <el-button :loading="scope.row.buttonLoading" @click="clickEditBtn(scope.row)" type="primary">编辑</el-button>
+            <el-button @click="clickManageBtn(scope.row)">管理</el-button>
             <el-button @click="clickRemoveBtn(scope.row)" type="danger">删除</el-button>
           </template>
         </el-table-column>
@@ -135,19 +137,19 @@
         </el-form-item>
         <el-form-item label="是否展示 :" prop="showFlag">
           <el-radio-group v-model="info.showFlag">
-            <el-radio label="0" border>展示</el-radio>
-            <el-radio label="1" border>不展示</el-radio>
+            <el-radio :label="true" border>展示</el-radio>
+            <el-radio :label="false" border>不展示</el-radio>
           </el-radio-group>
         </el-form-item>
-        <el-form-item label="赛讯标题图片  :" prop="img">
+        <el-form-item label="赛讯标题图片  :" prop="imgUrl">
           <CmUpload
                   upload-name="img"
-                  :initObj="info.img"
+                  :initObj="info.imgUrl"
                   @uploadSuccess="uploadSuccess">
           </CmUpload>
         </el-form-item>
-        <el-form-item label="赛讯详情 :" prop="details">
-          <el-input maxlength="100" type="textarea" placeholder="请输入赛讯详情" v-model.trim="info.details"></el-input>
+        <el-form-item label="赛讯详情 :" prop="context">
+          <el-input maxlength="100" type="textarea" placeholder="请输入赛讯详情" v-model.trim="info.context"></el-input>
         </el-form-item>
       </el-form>
       <div class="mt10 dis-fl ju-ct">
@@ -201,9 +203,9 @@
           //是否展示
           showFlag: '',
           //详情
-          details: '',
+          context: '',
           //赛讯图片
-          img: '',
+          imgUrl: '',
 
         },
         //规则校验
@@ -278,14 +280,14 @@
               trigger: 'change'
             },
           ],
-          details: [
+          context: [
             {
               required: true,
               validator: this.$verifys.nullStr({item: '赛讯详情'}),
               trigger: 'blur'
             },
           ],
-          img: [
+          imgUrl: [
             {
               required: true,
               validator: this.$verifys.nullStr({item: '赛讯标题图片'}),
@@ -334,24 +336,84 @@
       //点击新增按钮
       clickAddBtn() {
         this.currentHandle = 'add';
+        delete this.info.id;
         this.isShowGameDialog = true;
       },
       //点击编辑按钮
-      clickEditBtn() {
+      clickEditBtn(row) {
         this.currentHandle = 'edit';
-        this.isShowGameDialog = true;
-      },
+        this.info.id = row.id;
+        row.buttonLoading = true;
+        this.$api.game.getContestById(row.id).then(res => {
+          row.buttonLoading = false;
+          if (res.data && res.data.resultCode === 0) {
+            let data = res.data.data;
+            this.info.title = data.title;
+            this.info.context = data.context;
+            this.info.imgUrl = data.imgUrl;
+            this.info.fabulousNumber = data.fabulousNumber;
+            this.info.money = data.money;
+            this.info.peopleNumber = data.peopleNumber;
+            this.info.play_room = data.playRoom;
+            this.info.play_time = data.playTime;
+            this.info.showFlag = data.showFlag;
+            this.info.state = data.state;
+            this.info.address = data.address;
 
+            this.isShowGameDialog = true;
+          }
+        });
+      },
+      //点击'管理'按钮
+      clickManageBtn(row) {
+        this.$router.push('/gameManage?id=' + row.id);
+      },
+      //点击'删除'按钮
+      clickRemoveBtn(row) {
+        this.$confirm(`确定删除当前赛讯 ?`, '', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+          this.$api.game.delContest(row.id).then(res => {
+            if (res.data && res.data.resultCode === 0) {
+              this.$message.success('赛讯删除成功');
+              this.initData();
+            }
+          });
+        }).catch(() => {
+        });
+      },
       //上传成功
       uploadSuccess(data) {
-        this.info.img = data.imgSrc;
+        this.info.imgUrl = data.imgSrc;
       },
-
       //提交赛讯
       submitInfoBtn(formName) {
         this.$refs[formName].validate(async valid => {
           if (valid) {
             if (this.currentHandle === 'add') {
+              let params = {};
+              params.address = this.info.address;
+              params.city = this.info.city ? this.info.city.join('') : '';
+              params.context = this.info.context;
+              params.fabulousNumber = this.info.fabulousNumber;
+              params.imgUrl = this.info.imgUrl;
+              params.money = this.info.money;
+              params.peopleNumber = this.info.peopleNumber;
+              params.play_room = this.info.play_room;
+              params.play_time = this.info.play_time;
+              params.showFlag = this.info.showFlag;
+              params.state = this.info.state;
+              params.title = this.info.title;
+
+              this.$api.game.addContest(params).then(res => {
+                if (res.data && res.data.resultCode === 0) {
+                  this.$message.success('赛讯删除成功');
+                  this.initData();
+                  this.isShowGameDialog = false;
+                }
+              });
 
             } else {
 

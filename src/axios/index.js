@@ -4,7 +4,8 @@ import {Message} from "element-ui";
 axios.defaults.timeout = 50000;
 
 //请求的基础url
-axios.defaults.baseURL = 'http://www.taiqiuplus.com:8082/api';
+// axios.defaults.baseURL = 'http://www.taiqiuplus.com:8082/api';
+axios.defaults.baseURL = 'http://billiards.utools.club/api';
 
 // axios.defaults.baseURL = window.location.href + 'api';
 

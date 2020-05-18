@@ -61,7 +61,11 @@ const routes = [
                 path: '/game',
                 name: 'game',
                 component: () => import('../views/game/game.vue'),
-
+            },
+            {
+                path: '/gameManage',
+                name: 'game',
+                component: () => import('../views/game/gameManage.vue'),
             },
             {
                 path: '/user',
