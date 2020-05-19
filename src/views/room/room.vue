@@ -181,7 +181,7 @@
     name: "room",
     data() {
       let validateImg = (rule, value, callback) => {
-        console.log(value)
+
         if (value === '') {
           callback(new Error('11'));
         } else {

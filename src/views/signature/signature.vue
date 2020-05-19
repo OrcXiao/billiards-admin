@@ -100,13 +100,41 @@
         <el-form-item label="签表标题 :" prop="title">
           <el-input maxlength="20" placeholder="请输入签表标题" v-model.trim="info.title"></el-input>
         </el-form-item>
-        <el-form-item label="签表详情 :" prop="details">
-          <el-input maxlength="100" type="textarea" placeholder="请输入签表详情" v-model.trim="info.details"></el-input>
-        </el-form-item>
+        <!--        <el-form-item label="签表详情 :" prop="details">-->
+        <!--          <el-input maxlength="100" type="textarea" placeholder="请输入签表详情" v-model.trim="info.details"></el-input>-->
+        <!--        </el-form-item>-->
         <el-form-item label="签表标题图片 :" prop="img">
           <CmUpload
                   upload-name="img"
                   :initObj="info.img"
+                  @uploadSuccess="uploadSuccess">
+          </CmUpload>
+        </el-form-item>
+        <el-form-item label="签表详情1 :">
+          <CmUpload
+                  upload-name="imgOne"
+                  :initObj="info.imgOne"
+                  @uploadSuccess="uploadSuccess">
+          </CmUpload>
+        </el-form-item>
+        <el-form-item label="签表详情2 :">
+          <CmUpload
+                  upload-name="imgTwo"
+                  :initObj="info.imgTwo"
+                  @uploadSuccess="uploadSuccess">
+          </CmUpload>
+        </el-form-item>
+        <el-form-item label="签表详情3 :">
+          <CmUpload
+                  upload-name="imgThree"
+                  :initObj="info.imgThree"
+                  @uploadSuccess="uploadSuccess">
+          </CmUpload>
+        </el-form-item>
+        <el-form-item label="签表详情4 :">
+          <CmUpload
+                  upload-name="imgFour"
+                  :initObj="info.imgFour"
                   @uploadSuccess="uploadSuccess">
           </CmUpload>
         </el-form-item>
@@ -121,181 +149,195 @@
 </template>
 
 <script>
-    export default {
-        name: "signature",
-        data() {
-            return {
-                //搜索条件
-                condition: {
-                    title: '',
-                    timeRang: null
-                },
-                //表格数据
-                tableData: [],
-                //显示弹框
-                isShowInfoDialog: false,
-                //签表obj
-                info: {
-                    //标题
-                    title: '',
-                    //详情
-                    details: '',
-                    //签表图片
-                    img: ''
-                },
-                //规则校验
-                infoRules: {
-                    title: [
-                        {
-                            required: true,
-                            validator: this.$verifys.nullStr({item: '签表标题'}),
-                            trigger: 'blur'
-                        },
-                    ],
-                    details: [
-                        {
-                            required: true,
-                            validator: this.$verifys.nullStr({item: '签表详情'}),
-                            trigger: 'blur'
-                        },
-                    ],
-                    img: [
-                        {
-                            required: true,
-                            validator: this.$verifys.nullStr({item: '签表标题图片'}),
-                            trigger: 'change'
-                        },
-                    ],
-                },
-                //当前操作状态(edit->编辑, add->新增)
-                currentHandle: '',
-                submitButtonLoading: false,
-            }
+  export default {
+    name: "signature",
+    data() {
+      return {
+        //搜索条件
+        condition: {
+          title: '',
+          timeRang: null
         },
-        computed: {},
-        created() {
+        //表格数据
+        tableData: [],
+        //显示弹框
+        isShowInfoDialog: false,
+        //签表obj
+        info: {
+          //标题
+          title: '',
+          //签表图片
+          img: '',
+          imgOne: '',
+          imgTwo: '',
+          imgThree: '',
+          imgFour: '',
         },
-        mounted() {
-            this.$nextTick(() => {
-                this.initData();
-            })
+        //规则校验
+        infoRules: {
+          title: [
+            {
+              required: true,
+              validator: this.$verifys.nullStr({item: '签表标题'}),
+              trigger: 'blur'
+            },
+          ],
+          details: [
+            {
+              required: true,
+              validator: this.$verifys.nullStr({item: '签表详情'}),
+              trigger: 'blur'
+            },
+          ],
+          img: [
+            {
+              required: true,
+              validator: this.$verifys.nullStr({item: '签表标题图片'}),
+              trigger: 'change'
+            },
+          ],
         },
-        methods: {
-            //获取数据
-            initData() {
-                let params = {
-                    title: this.condition.title,
-                    currentPage: this.Mixin_currentPage,
-                    pageSize: this.Mixin_pageSize,
-                };
-                if (this.condition.timeRang) {
-                    params.startDate = this.condition.timeRang[0];
-                    params.stopDate = this.condition.timeRang[1];
-                }
-                this.$api.signature.getSignForms(params).then(res => {
-                    if (res.data && res.data.resultCode === 0) {
-                        res.data.data.records.forEach((item, index) => {
-                            item.buttonLoading = false;
-                        });
-                        this.tableData = res.data.data.records;
-                        this.Mixin_total = res.data.data.total;
-                    }
-                });
-            },
-            //点击新增按钮
-            clickAddBtn() {
-                this.currentHandle = 'add';
-                this.info.title = '';
-                this.info.details = '';
-                this.info.img = '';
-                this.isShowInfoDialog = true;
-            },
-            //点击编辑按钮
-            clickEditBtn(row) {
-                this.currentHandle = 'edit';
-                this.info.id = row.id;
-                row.buttonLoading = true;
-                this.$api.signature.getSignFormById(row.id).then(res => {
-                    row.buttonLoading = false;
-                    if (res.data && res.data.resultCode === 0) {
-                        let data = res.data.data;
-                        this.info.title = data.title;
-                        this.info.details = data.context;
-                        this.info.img = data.imgUrl;
-                        this.isShowInfoDialog = true;
-                    }
-                });
-            },
+        //当前操作状态(edit->编辑, add->新增)
+        currentHandle: '',
+        submitButtonLoading: false,
+      }
+    },
+    computed: {},
+    created() {
+    },
+    mounted() {
+      this.$nextTick(() => {
+        this.initData();
+      })
+    },
+    methods: {
+      //获取数据
+      initData() {
+        let params = {
+          title: this.condition.title,
+          currentPage: this.Mixin_currentPage,
+          pageSize: this.Mixin_pageSize,
+        };
+        if (this.condition.timeRang) {
+          params.startDate = this.condition.timeRang[0];
+          params.stopDate = this.condition.timeRang[1];
+        }
+        this.$api.signature.getSignForms(params).then(res => {
+          if (res.data && res.data.resultCode === 0) {
+            res.data.data.records.forEach((item, index) => {
+              item.buttonLoading = false;
+            });
+            this.tableData = res.data.data.records;
+            this.Mixin_total = res.data.data.total;
+          }
+        });
+      },
+      //点击新增按钮
+      clickAddBtn() {
+        this.currentHandle = 'add';
+        this.info.title = '';
+        this.info.img = '';
+        this.info.imgOne = '';
+        this.info.imgTwo = '';
+        this.info.imgThree = '';
+        this.info.imgFour = '';
+        this.isShowInfoDialog = true;
+      },
+      //点击编辑按钮
+      clickEditBtn(row) {
+        this.currentHandle = 'edit';
+        this.info.id = row.id;
+        row.buttonLoading = true;
+        this.$api.signature.getSignFormById(row.id).then(res => {
+          row.buttonLoading = false;
+          if (res.data && res.data.resultCode === 0) {
+            let data = res.data.data;
+            this.info.title = data.title;
+            this.info.imgOne = data.imgOne;
+            this.info.imgTwo = data.imgTwo;
+            this.info.imgThree = data.imgThree;
+            this.info.imgFour = data.imgFour;
+            this.info.img = data.imgUrl;
+            this.isShowInfoDialog = true;
+          }
+        });
+      },
 
-            //上传成功
-            uploadSuccess(data) {
-                this.info.img = data.imgSrc;
-            },
-            //提交签表
-            submitInfoBtn(formName) {
-                this.$refs[formName].validate(async valid => {
-                    if (valid) {
-                        this.submitButtonLoading = true;
-                        if (this.currentHandle === 'add') {
-                            //新增资讯
-                            let params = {
-                                context: this.info.details,
-                                title: this.info.title,
-                                showFlag: false,
-                                imgUrl: this.info.img,
-                            };
-                            this.$api.signature.addSignForm(params).then(res => {
-                                this.submitButtonLoading = false;
-                                if (res.data && res.data.resultCode === 0) {
-                                    this.$message.success('新增签表成功');
-                                    this.initData();
-                                    this.isShowInfoDialog = false;
-                                }
-                            });
-                        } else {
-                            //编辑资讯
-                            let params = {
-                                id: this.info.id,
-                                context: this.info.details,
-                                title: this.info.title,
-                                showFlag: false,
-                                imgUrl: this.info.img,
-                            };
-                            this.$api.signature.addSignForm(params).then(res => {
-                                this.submitButtonLoading = false;
-                                if (res.data && res.data.resultCode === 0) {
-                                    this.$message.success('修改资讯成功');
-                                    this.initData();
-                                    this.isShowInfoDialog = false;
-                                }
-                            });
-                        }
-                    }
-                })
-            },
-            //点击启用/禁用按钮
-            clickStartOrEndBtn(row, type) {
-                this.$confirm(`确定${type === 'start' ? '启用' : '禁用'}当前签表 ?`, '', {
-                    confirmButtonText: '确定',
-                    cancelButtonText: '取消',
-                    type: 'warning'
-                }).then(() => {
-                    this.$api.signature.updateShow(row.id).then(res => {
-                        if (res.data && res.data.resultCode === 0) {
-                            this.$message.success(`当前签表${type === 'start' ? '启用' : '禁用'}成功`);
-                            this.initData();
-                        }
-                    });
-                }).catch(() => {
-                });
-            },
-        },
-        props: {},
-        watch: {},
-        mixins: [],
-        filters: {},
-        components: {},
-    }
+      //上传成功
+      uploadSuccess(data) {
+        this.info[data.uploadName] = data.imgSrc;
+      },
+      //提交签表
+      submitInfoBtn(formName) {
+        this.$refs[formName].validate(async valid => {
+          if (valid) {
+            this.submitButtonLoading = true;
+            if (this.currentHandle === 'add') {
+              //新增资讯
+              let params = {
+                imgOne: this.info.imgOne,
+                imgTwo: this.info.imgTwo,
+                imgThree: this.info.imgThree,
+                imgFour: this.info.imgFour,
+                title: this.info.title,
+                showFlag: false,
+                imgUrl: this.info.img,
+              };
+              this.$api.signature.addSignForm(params).then(res => {
+                this.submitButtonLoading = false;
+                if (res.data && res.data.resultCode === 0) {
+                  this.$message.success('新增签表成功');
+                  this.initData();
+                  this.isShowInfoDialog = false;
+                }
+              });
+            } else {
+              //编辑资讯
+              let params = {
+                id: this.info.id,
+                imgOne: this.info.imgOne,
+                imgTwo: this.info.imgTwo,
+                imgThree: this.info.imgThree,
+                imgFour: this.info.imgFour,
+                title: this.info.title,
+                showFlag: false,
+                imgUrl: this.info.img,
+              };
+              this.$api.signature.addSignForm(params).then(res => {
+                this.submitButtonLoading = false;
+                if (res.data && res.data.resultCode === 0) {
+                  this.$message.success('修改资讯成功');
+                  this.initData();
+                  this.isShowInfoDialog = false;
+                }
+              });
+            }
+          }
+        })
+      },
+      //点击启用/禁用按钮
+      clickStartOrEndBtn(row, type) {
+        this.$confirm(`确定${type === 'start' ? '启用' : '禁用'}当前签表 ?`, '', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+          this.$api.signature.updateShow(row.id).then(res => {
+            if (res.data && res.data.resultCode === 0) {
+              this.$message.success(`当前签表${type === 'start' ? '启用' : '禁用'}成功`);
+              this.initData();
+            }
+          });
+        }).catch(() => {
+        });
+      },
+    },
+    props: {},
+    watch: {},
+    mixins: [],
+    filters: {},
+    components: {},
+  }
 </script>
 
 <style lang="scss" scoped>

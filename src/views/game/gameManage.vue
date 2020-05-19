@@ -32,17 +32,12 @@
                 width="50">
         </el-table-column>
         <el-table-column
-                prop="title"
-                label="比赛"
-        >
-        </el-table-column>
-        <el-table-column
                 prop="userName"
                 label="名字"
         >
         </el-table-column>
         <el-table-column
-                prop="peopleNumber"
+                prop="phone"
                 label="手机号"
         >
         </el-table-column>
@@ -71,12 +66,10 @@
           </template>
         </el-table-column>
         <el-table-column
-                width="280"
                 prop="address"
                 label="操作">
           <template slot-scope="scope">
             <el-button @click="clickEditBtn(scope.row)" type="primary">编辑</el-button>
-            <el-button @click="clickRemoveBtn(scope.row)" type="danger">删除</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -98,10 +91,12 @@
             @close="Mixin_dialogClose('info', 'isShowGameDialog')"
             width="400px">
       <el-form ref="info" :model="info" :rules="infoRules" label-width="120px">
-        <el-form-item label="奖金 :" prop="bonus">
+<!--        <el-form-item label="奖金 :" prop="bonus">-->
+        <el-form-item label="奖金 :">
           <el-input maxlength="20" placeholder="请输入奖金" v-model.trim="info.bonus"></el-input>
         </el-form-item>
-        <el-form-item label="名次 :" prop="ranking">
+<!--        <el-form-item label="名次 :" prop="ranking">-->
+        <el-form-item label="名次 :">
           <el-input maxlength="20" placeholder="请输入名次" v-model.trim="info.ranking"></el-input>
         </el-form-item>
       </el-form>
@@ -196,21 +191,26 @@
         this.currentHandle = 'edit';
         this.info.id = row.id;
         this.isShowGameDialog = true;
+        this.info.bonus = row.money;
+        this.info.ranking = row.ranking;
       },
 
-      //提交赛讯
+      //提交
       submitInfoBtn(formName) {
         this.$refs[formName].validate(async valid => {
           if (valid) {
-            let params = {};
+            let params = {
+              id: this.info.id,
+              money: this.info.bonus,
+              ranking: this.info.ranking,
+            };
             this.$api.game.setRanking(params).then(res => {
-              console.log(res)
-              if (res.data && res.data.resultCode === 200) {
-                let data = res.data.data;
-
+              if (res.data && res.data.resultCode === 0) {
+                this.initData();
+                this.$message.success('设置奖金和名次成功');
+                this.isShowGameDialog = false;
               }
             });
-
           }
         })
       },
