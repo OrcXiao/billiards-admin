@@ -105,10 +105,19 @@ const api = {
     updateShow(params) {
       return axios.put('/contestDO/updateShow?id=' + params)
     },
-    // 根据比赛id获取不参与抽奖人员信息
+    //根据比赛id获取比赛人员
     getEnrollUser(params) {
       return axios.get('/enrollDO/getEnrollUser/' + params)
     },
+    //比赛人员详情列表
+    contestDetail(params) {
+      return axios.get('/contestDO/contestDetail', {params})
+    },
+    // 设置排名和奖金
+    setRanking(params) {
+      return axios.post('/contestDO/setRanking', params)
+    },
+
   },
   //球房
   room: {

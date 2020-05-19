@@ -32,12 +32,12 @@
                 width="50">
         </el-table-column>
         <el-table-column
-                prop="id"
+                prop="title"
                 label="比赛"
         >
         </el-table-column>
         <el-table-column
-                prop="title"
+                prop="userName"
                 label="名字"
         >
         </el-table-column>
@@ -50,11 +50,17 @@
                 prop="money"
                 label="奖金"
         >
+          <template slot-scope="scope">
+            {{scope.row.money || '-'}}
+          </template>
         </el-table-column>
         <el-table-column
-                prop="money"
+                prop="ranking"
                 width="260"
                 label="名次">
+          <template slot-scope="scope">
+            {{scope.row.ranking || '-'}}
+          </template>
         </el-table-column>
 
         <el-table-column
@@ -90,7 +96,7 @@
             title="编辑"
             :visible.sync="isShowGameDialog"
             @close="Mixin_dialogClose('info', 'isShowGameDialog')"
-            width="700px">
+            width="400px">
       <el-form ref="info" :model="info" :rules="infoRules" label-width="120px">
         <el-form-item label="奖金 :" prop="bonus">
           <el-input maxlength="20" placeholder="请输入奖金" v-model.trim="info.bonus"></el-input>
@@ -148,15 +154,16 @@
         },
         //当前操作状态(edit->编辑, add->新增)
         currentHandle: '',
+        //比赛id
+        contestId: '',
       }
     },
-    computed: {
-
-    },
+    computed: {},
     created() {
     },
     mounted() {
       this.$nextTick(() => {
+        this.contestId = this.$route.query.id || '';
         this.initData();
       })
     },
@@ -164,7 +171,8 @@
       //获取数据
       initData() {
         let params = {
-          title: this.condition.title,
+          contextId: this.contestId,
+          name: this.condition.name,
           currentPage: this.Mixin_currentPage,
           pageSize: this.Mixin_pageSize,
         };
@@ -172,13 +180,12 @@
           params.startDate = this.condition.timeRang[0];
           params.stopDate = this.condition.timeRang[1];
         }
-        this.$api.game.getContests(params).then(res => {
+        this.$api.game.contestDetail(params).then(res => {
           if (res.data && res.data.resultCode === 0) {
             res.data.data.records.forEach((item, index) => {
               item.buttonLoading = false;
             });
             this.tableData = res.data.data.records;
-            this.tableData = [''];
             this.Mixin_total = res.data.data.total;
           }
         });
@@ -191,15 +198,18 @@
         this.isShowGameDialog = true;
       },
 
-      //点击'删除'按钮
-      clickRemoveBtn(row) {
-
-      },
-
       //提交赛讯
       submitInfoBtn(formName) {
         this.$refs[formName].validate(async valid => {
           if (valid) {
+            let params = {};
+            this.$api.game.setRanking(params).then(res => {
+              console.log(res)
+              if (res.data && res.data.resultCode === 200) {
+                let data = res.data.data;
+
+              }
+            });
 
           }
         })

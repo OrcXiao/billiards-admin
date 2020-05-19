@@ -613,8 +613,9 @@
           }
         })
       },
-      //点击设置抽签规则
+      //点击'设置抽签规则'按钮
       clickRuleBtn(row) {
+        this.draw.value = [];
         this.$api.game.getEnrollUser(row.id).then(res => {
           if (res.data && res.data.resultCode === 0) {
             let data = res.data.data;
@@ -623,6 +624,11 @@
               this.$message.warning('当前没有参与抽签的人员');
             } else {
               this.draw.id = row.id;
+              data.forEach((item, index) => {
+                if (item.isDraw === '1') {
+                  this.draw.value.push(item.id);
+                }
+              });
               this.isShowRuleDialog = true;
             }
           }
@@ -634,7 +640,7 @@
           if (valid) {
             let params = {
               contestId: this.draw.id,
-              userIds: this.draw.value.join(','),
+              userIds: [...new Set(this.draw.value)].join(','),
             };
             this.$api.game.notDrawUser(params).then(res => {
               if (res.data && res.data.resultCode === 0) {
