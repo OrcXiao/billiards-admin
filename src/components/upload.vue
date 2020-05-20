@@ -45,7 +45,6 @@
       'initObj': {
         handler: function (val, oldval) {
           this.imgSrc = val;
-          console.log(`uploadForm` + this.uploadName);
           setTimeout(() => {
             document.getElementById(`uploadForm` + this.uploadName).value = null;
           }, 100);

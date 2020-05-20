@@ -68,13 +68,15 @@
           </template>
         </el-table-column>
         <el-table-column
-                width="200"
+                width="300"
                 label="操作">
           <template slot-scope="scope">
             <el-button :loading="scope.row.buttonLoading" @click="clickEditBtn(scope.row)" type="primary">编辑</el-button>
             <el-button v-if="!scope.row.showFlag" @click="clickStartOrEndBtn(scope.row, 'start')" type="success">启用
             </el-button>
-            <el-button v-if="scope.row.showFlag" @click="clickStartOrEndBtn(scope.row, 'end')" type="danger">禁用
+            <el-button v-if="scope.row.showFlag" @click="clickStartOrEndBtn(scope.row, 'end')" type="warning">禁用
+            </el-button>
+            <el-button @click="clickRemoveBtn(scope.row)" type="danger">删除
             </el-button>
           </template>
         </el-table-column>
@@ -220,7 +222,7 @@
         };
         if (this.condition.timeRang) {
           params.startDate = this.condition.timeRang[0];
-          params.stopDate = this.condition.timeRang[1];
+          params.stopDate = this.condition.timeRang[1] + (1000 * 60 * 60 * 24 - 1);
         }
         this.$api.signature.getSignForms(params).then(res => {
           if (res.data && res.data.resultCode === 0) {
@@ -326,6 +328,22 @@
             if (res.data && res.data.resultCode === 0) {
               this.$message.success(`当前签表${type === 'start' ? '启用' : '禁用'}成功`);
               this.initData();
+            }
+          });
+        }).catch(() => {
+        });
+      },
+      //点击'删除'按钮
+      clickRemoveBtn(row) {
+        this.$confirm(`确定删除当前签表 ?`, '', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+          this.$api.signature.delSignForm(row.id).then(res => {
+            if (res.data && res.data.resultCode === 0) {
+              this.$message.success(`签表删除成功`);
+              this.Mixin_handleCurrentChange(1);
             }
           });
         }).catch(() => {

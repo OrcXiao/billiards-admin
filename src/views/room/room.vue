@@ -296,7 +296,7 @@
         };
         if (this.condition.timeRang) {
           params.startDate = this.condition.timeRang[0];
-          params.stopDate = this.condition.timeRang[1];
+          params.stopDate = this.condition.timeRang[1] + (1000 * 60 * 60 * 24 - 1);
         }
         this.$api.room.getRooms(params).then(res => {
           if (res.data && res.data.resultCode === 0) {
@@ -345,6 +345,12 @@
             this.room.activity = data.activity;
             this.room.equipment = data.facilities;
             this.room.address = data.address;
+            this.room.imgOne = data.imgOne;
+            this.room.imgTwo = data.imgTwo;
+            this.room.imgThree = data.imgThree;
+            this.room.imgFour = data.imgFour;
+            this.room.imgFive = data.imgFive;
+            this.room.imgSix = data.imgSix;
             this.room.area = [data.province, data.city, data.area];
             this.isShowRoomDialog = true;
           }
@@ -366,13 +372,19 @@
                 activity: this.room.activity,
                 chargingRules: this.room.charge,
                 facilities: this.room.equipment,
-                latitude: this.room.latitude,
-                longitude: this.room.longitude,
+                latitude: parseFloat(this.room.latitude),
+                longitude: parseFloat(this.room.longitude),
                 name: this.room.name,
                 province: this.room.area[0],
                 city: this.room.area[1],
                 area: this.room.area[2],
                 address: this.room.address,
+                imgOne: this.room.imgOne,
+                imgTwo: this.room.imgTwo,
+                imgThree: this.room.imgThree,
+                imgFour: this.room.imgFour,
+                imgFive: this.room.imgFive,
+                imgSix: this.room.imgSix,
               };
               delete this.room.id;
               this.$api.room.addRoom(params).then(res => {
@@ -390,13 +402,19 @@
                 activity: this.room.activity,
                 chargingRules: this.room.charge,
                 facilities: this.room.equipment,
-                latitude: this.room.latitude,
-                longitude: this.room.longitude,
+                latitude: parseFloat(this.room.latitude),
+                longitude: parseFloat(this.room.longitude),
                 name: this.room.name,
                 province: this.room.area[0],
                 city: this.room.area[1],
                 area: this.room.area[2],
                 address: this.room.address,
+                imgOne: this.room.imgOne,
+                imgTwo: this.room.imgTwo,
+                imgThree: this.room.imgThree,
+                imgFour: this.room.imgFour,
+                imgFive: this.room.imgFive,
+                imgSix: this.room.imgSix,
               };
               this.$api.room.addRoom(params).then(res => {
                 this.submitButtonLoading = false;
@@ -424,13 +442,9 @@
               this.Mixin_handleCurrentChange(1);
             }
           });
-
         }).catch(() => {
-
         });
       },
-
-
     },
     props: {},
     watch: {},
