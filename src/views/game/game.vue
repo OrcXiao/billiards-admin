@@ -108,7 +108,7 @@
             :title="currentHandle === 'add' ? '新增赛讯': '编辑赛讯'"
             :visible.sync="isShowGameDialog"
             @close="Mixin_dialogClose('info', 'isShowGameDialog')"
-            width="700px">
+            width="1000px">
       <el-form ref="info" :model="info" :rules="infoRules" label-width="120px">
         <el-form-item label="赛讯标题 :" prop="title">
           <el-input maxlength="20" placeholder="请输入赛讯标题" v-model.trim="info.title"></el-input>
@@ -161,7 +161,8 @@
           </CmUpload>
         </el-form-item>
         <el-form-item label="赛讯详情 :" prop="context">
-          <el-input type="textarea" placeholder="请输入赛讯详情" v-model.trim="info.context"></el-input>
+<!--          <el-input type="textarea" placeholder="请输入赛讯详情" v-model.trim="info.context"></el-input>-->
+          <editor-bar v-model="info.context" :isClear="isClear"></editor-bar>
         </el-form-item>
       </el-form>
       <div class="mt10 dis-fl ju-ct">
@@ -220,6 +221,8 @@
 </template>
 
 <script>
+  import EditorBar from '../../components/editor'
+
   export default {
     name: "information",
     data() {
@@ -404,6 +407,9 @@
             }
           ],
         },
+        //编辑器
+        isClear: false,
+        detail: ""
       }
     },
     computed: {
@@ -657,7 +663,7 @@
     watch: {},
     mixins: [],
     filters: {},
-    components: {},
+    components: {EditorBar},
   }
 </script>
 
