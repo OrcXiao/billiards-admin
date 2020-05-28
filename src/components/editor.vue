@@ -52,7 +52,7 @@
       seteditor() {
         this.editor = new Editor(this.$refs.toolbar, this.$refs.editor)
         this.editor.customConfig.uploadImgShowBase64 = false // base 64 存储图片
-        this.editor.customConfig.uploadImgServer = 'http://otp.cdinfotech.top/file/upload_images'// 配置服务器端地址
+        this.editor.customConfig.uploadImgServer = ''// 配置服务器端地址
         this.editor.customConfig.uploadImgHeaders = { }// 自定义 header
         this.editor.customConfig.uploadFileName = 'file' // 后端接受上传文件的参数名
         this.editor.customConfig.uploadImgMaxSize = 2 * 1024 * 1024 // 将图片大小限制为 2M
