@@ -91,7 +91,7 @@
           <el-input maxlength="20" placeholder="请输入教程标题" v-model.trim="appoint.title"></el-input>
         </el-form-item>
         <el-form-item label="教程详情 :" prop="details">
-          <el-input maxlength="100" type="textarea" placeholder="请输入教程详情" v-model.trim="appoint.details"></el-input>
+          <el-input type="textarea" placeholder="请输入教程详情" v-model.trim="appoint.details"></el-input>
         </el-form-item>
       </el-form>
       <div class="mt10 dis-fl ju-ct">

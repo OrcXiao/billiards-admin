@@ -103,14 +103,19 @@
             :title="currentHandle === 'add' ? '新增资讯': '编辑资讯'"
             :visible.sync="isShowInfoDialog"
             @close="Mixin_dialogClose('info', 'isShowInfoDialog')"
-            width="700px">
+            width="1000px">
       <el-form ref="info" :model="info" :rules="infoRules" label-width="120px">
         <el-form-item label="资讯标题 :" prop="title">
           <el-input maxlength="20" placeholder="请输入资讯标题" v-model.trim="info.title"></el-input>
         </el-form-item>
-        <el-form-item label="资讯详情 :" prop="details">
-          <el-input maxlength="100" type="textarea" placeholder="请输入资讯详情" v-model.trim="info.details"></el-input>
+        <el-form-item label="资讯标题图片 :" prop="img">
+          <CmUpload
+                  upload-name="img"
+                  :initObj="info.img"
+                  @uploadSuccess="uploadSuccess">
+          </CmUpload>
         </el-form-item>
+
         <el-form-item label="点赞数 :" prop="praisePoints">
           <el-input maxlength="100" placeholder="请输入资讯详情" v-model.trim="info.praisePoints"></el-input>
         </el-form-item>
@@ -125,13 +130,10 @@
             <el-option :label="4" :value="4"></el-option>
           </el-select>
         </el-form-item>
-        <el-form-item label="资讯标题图片 :" prop="img">
-          <CmUpload
-                  upload-name="img"
-                  :initObj="info.img"
-                  @uploadSuccess="uploadSuccess">
-          </CmUpload>
+        <el-form-item label="资讯详情 :" prop="details">
+          <editor-bar v-model="info.details" :isClear="isClear"></editor-bar>
         </el-form-item>
+
       </el-form>
       <div class="mt10 dis-fl ju-ct">
         <el-button :loading="submitButtonLoading" type="primary" @click="submitInfoBtn('info')">确定</el-button>
@@ -143,6 +145,7 @@
 </template>
 
 <script>
+  import EditorBar from '../../components/editor'
 
   export default {
     name: "information",
@@ -222,6 +225,10 @@
         //当前操作状态(edit->编辑, add->新增)
         currentHandle: '',
         submitButtonLoading: false,
+        //编辑器
+        isClear: false,
+        detail: ""
+
       }
     },
     computed: {},
@@ -390,7 +397,7 @@
     watch: {},
     mixins: [],
     filters: {},
-    components: {},
+    components: {EditorBar},
     directives: {},
   }
 </script>

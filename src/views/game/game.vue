@@ -161,7 +161,7 @@
           </CmUpload>
         </el-form-item>
         <el-form-item label="赛讯详情 :" prop="context">
-          <el-input maxlength="100" type="textarea" placeholder="请输入赛讯详情" v-model.trim="info.context"></el-input>
+          <el-input type="textarea" placeholder="请输入赛讯详情" v-model.trim="info.context"></el-input>
         </el-form-item>
       </el-form>
       <div class="mt10 dis-fl ju-ct">

@@ -102,7 +102,7 @@
           <el-input maxlength="20" placeholder="请输入教程标题" v-model.trim="info.title"></el-input>
         </el-form-item>
         <el-form-item label="教程详情 :" prop="details">
-          <el-input maxlength="100" type="textarea" placeholder="请输入教程详情" v-model.trim="info.details"></el-input>
+          <el-input type="textarea" placeholder="请输入教程详情" v-model.trim="info.details"></el-input>
         </el-form-item>
         <el-form-item label="教程标题图片  :" prop="img">
           <CmUpload

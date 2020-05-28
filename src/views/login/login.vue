@@ -79,8 +79,11 @@
     },
     computed: {},
     created() {
+      console.log(new Date().getTime());
     },
     mounted() {
+      console.log(new Date().getTime());
+
       localStorage.clear();
       this.getAuthCode();
     },
