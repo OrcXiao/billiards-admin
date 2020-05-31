@@ -97,7 +97,7 @@
             :title="currentHandle === 'add' ? '新增球房': '编辑球房'"
             :visible.sync="isShowRoomDialog"
             @close="Mixin_dialogClose('room', 'isShowRoomDialog')"
-            width="700px">
+            width="1000px">
       <el-form ref="room" :model="room" :rules="roomRules" label-width="120px">
         <el-form-item label="球房名称 :" prop="name">
           <el-input maxlength="20" placeholder="请输入球房名称" v-model.trim="room.name"></el-input>
@@ -110,9 +110,6 @@
         </el-form-item>
         <el-form-item label="收费规则 :" prop="charge">
           <el-input placeholder="请输入收费规则" type="textarea" v-model.trim="room.charge"></el-input>
-        </el-form-item>
-        <el-form-item label="球房活动 :" prop="activity">
-          <el-input placeholder="请输入球房活动" type="textarea" v-model.trim="room.activity"></el-input>
         </el-form-item>
         <el-form-item label="球房设备 :" prop="equipment">
           <el-input placeholder="请输入球房设备" type="textarea" v-model.trim="room.equipment"></el-input>
@@ -165,7 +162,9 @@
             </CmUpload>
           </div>
         </el-form-item>
-
+        <el-form-item label="球房活动 :" prop="activity">
+          <editor-bar v-model="room.activity" :isClear="isClear"></editor-bar>
+        </el-form-item>
       </el-form>
       <div class="mt10 dis-fl ju-ct">
         <el-button :loading="submitButtonLoading" type="primary" @click="submitRoomBtn('room')">确定</el-button>
@@ -177,6 +176,8 @@
 </template>
 
 <script>
+  import EditorBar from '../../components/editor'
+
   export default {
     name: "room",
     data() {
@@ -272,6 +273,9 @@
         //当前操作类型
         currentHandle: '',
         submitButtonLoading: false,
+        //编辑器
+        isClear: false,
+
       }
     },
     computed: {
@@ -450,7 +454,7 @@
     watch: {},
     mixins: [],
     filters: {},
-    components: {},
+    components: {EditorBar},
   }
 </script>
 

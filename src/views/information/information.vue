@@ -227,8 +227,6 @@
         submitButtonLoading: false,
         //编辑器
         isClear: false,
-        detail: ""
-
       }
     },
     computed: {},
