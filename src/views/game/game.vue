@@ -141,6 +141,24 @@
                   placeholder="选择比赛时间">
           </el-date-picker>
         </el-form-item>
+        <el-form-item label="比赛开始时间 :" prop="playTimeStart">
+          <el-date-picker
+                  value-format="timestamp"
+                  class="wd100"
+                  v-model="info.playTimeStart"
+                  type="datetime"
+                  placeholder="选择比赛开始时间">
+          </el-date-picker>
+        </el-form-item>
+        <el-form-item label="比赛结束时间 :" prop="playTimeStop">
+          <el-date-picker
+                  value-format="timestamp"
+                  class="wd100"
+                  v-model="info.playTimeStop"
+                  type="datetime"
+                  placeholder="选择比赛结束时间">
+          </el-date-picker>
+        </el-form-item>
         <el-form-item label="参赛人数 :" prop="peopleNumber">
           <el-input placeholder="请输入参赛人数" v-model.trim="info.peopleNumber"></el-input>
         </el-form-item>
@@ -259,6 +277,10 @@
           playRoom: '',
           //比赛时间
           playTime: '',
+          //比赛开始时间
+          playTimeStart: '',
+          //比赛结束时间
+          playTimeStop: '',
           //参赛人数
           peopleNumber: '',
           //比赛进行天数
@@ -327,6 +349,20 @@
             {
               required: true,
               validator: this.$verifys.nullStr({item: '比赛时间'}),
+              trigger: 'blur'
+            },
+          ],
+          playTimeStart: [
+            {
+              required: true,
+              validator: this.$verifys.nullStr({item: '比赛开始时间'}),
+              trigger: 'blur'
+            },
+          ],
+          playTimeStop: [
+            {
+              required: true,
+              validator: this.$verifys.nullStr({item: '比赛结束时间'}),
               trigger: 'blur'
             },
           ],
@@ -467,6 +503,10 @@
           playRoom: '',
           //比赛时间
           playTime: '',
+          //比赛开始时间
+          playTimeStart: '',
+          //比赛结束时间
+          playTimeStop: '',
           //参赛人数
           peopleNumber: '',
           //比赛进行天数
@@ -500,6 +540,8 @@
             this.info.playDays = data.playDays;
             this.info.playRoom = data.playRoom;
             this.info.playTime = data.playTime;
+            this.info.playTimeStart = data.playTimeStart;
+            this.info.playTimeStop = data.playTimeStop;
             this.info.showFlag = data.showFlag + '';
             this.info.state = data.state;
             this.info.address = data.address;
@@ -560,6 +602,8 @@
               params.playDays = this.info.playDays;
               params.playRoom = this.info.playRoom;
               params.playTime = this.info.playTime;
+              params.playTimeStart = this.info.playTimeStart;
+              params.playTimeStop = this.info.playTimeStop;
               params.showFlag = this.info.showFlag === 'true';
               params.state = this.info.state;
               params.title = this.info.title;
@@ -586,6 +630,8 @@
               params.playDays = this.info.playDays;
               params.playRoom = this.info.playRoom;
               params.playTime = this.info.playTime;
+              params.playTimeStart = this.info.playTimeStart;
+              params.playTimeStop = this.info.playTimeStop;
               params.showFlag = this.info.showFlag === 'true';
               params.state = this.info.state;
               params.title = this.info.title;
