@@ -79,13 +79,14 @@
           </template>
         </el-table-column>
         <el-table-column
-                width="530"
+                width="650"
                 prop="address"
                 label="操作">
           <template slot-scope="scope">
             <el-button :loading="scope.row.buttonLoading" @click="clickEditBtn(scope.row)" type="primary">编辑</el-button>
             <el-button @click="clickChangeState(scope.row)">变更状态</el-button>
             <el-button @click="clickRuleBtn(scope.row)">设置抽签规则</el-button>
+            <el-button @click="clickAutoBtn(scope.row)">设置自动抽签</el-button>
             <el-button @click="clickManageBtn(scope.row)">管理</el-button>
             <el-button @click="clickRemoveBtn(scope.row)" type="danger">删除</el-button>
           </template>
@@ -684,6 +685,21 @@
               this.isShowRuleDialog = true;
             }
           }
+        });
+      },
+      //设置自动抽签
+      clickAutoBtn (row){
+        this.$confirm(`确定该比赛设置自动抽签 ?`, '', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+          this.$api.game.getDrawResult(row.id).then(res => {
+            if (res.data && res.data.resultCode === 0) {
+              this.$message.success('设置自动抽签成功');
+            }
+          });
+        }).catch(() => {
         });
       },
       //设置抽签规则

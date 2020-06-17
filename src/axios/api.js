@@ -117,6 +117,10 @@ const api = {
     setRanking(params) {
       return axios.post('/contestDO/setRanking', params)
     },
+    // 根据比赛id自动抽签
+    getDrawResult(params) {
+      return axios.post( '/enrollDO/getDrawResult/' + params)
+    },
 
   },
   //球房
