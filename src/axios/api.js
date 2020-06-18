@@ -119,7 +119,7 @@ const api = {
     },
     // 根据比赛id自动抽签
     getDrawResult(params) {
-      return axios.post( '/enrollDO/getDrawResult/' + params)
+      return axios.get( '/enrollDO/getDrawResult/' + params)
     },
 
   },
