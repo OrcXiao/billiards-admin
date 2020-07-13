@@ -93,6 +93,7 @@
     </div>
 
     <el-dialog
+      :close-on-click-modal="false"
             :title="currentHandle === 'add' ? '新增教程': '编辑教程'"
             :visible.sync="isShowInfoDialog"
             @close="Mixin_dialogClose('info', 'isShowInfoDialog')"

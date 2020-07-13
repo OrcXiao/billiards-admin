@@ -77,6 +77,7 @@
     </div>
 
     <el-dialog
+      :close-on-click-modal="false"
             :title="currentHandle === 'add' ? '新增赛讯': '编辑赛讯'"
             :visible.sync="isShowGameDialog"
             @close="Mixin_dialogClose('info', 'isShowGameDialog')"

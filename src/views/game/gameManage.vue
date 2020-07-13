@@ -86,6 +86,7 @@
     </div>
 
     <el-dialog
+      :close-on-click-modal="false"
             title="编辑"
             :visible.sync="isShowGameDialog"
             @close="Mixin_dialogClose('info', 'isShowGameDialog')"

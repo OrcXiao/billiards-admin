@@ -10,13 +10,13 @@
         </el-form-item>
         <el-form-item class="mg-l10" label="创建日期:">
           <el-date-picker
-                  class="w300"
-                  v-model.trim="condition.timeRang"
-                  type="daterange"
-                  value-format="timestamp"
-                  range-separator="至"
-                  start-placeholder="开始日期"
-                  end-placeholder="结束日期">
+            class="w300"
+            v-model.trim="condition.timeRang"
+            type="daterange"
+            value-format="timestamp"
+            range-separator="至"
+            start-placeholder="开始日期"
+            end-placeholder="结束日期">
           </el-date-picker>
         </el-form-item>
         <el-form-item class="mg-l20">
@@ -29,21 +29,21 @@
     <div>总计: {{Mixin_total}}家</div>
     <div class="mg-t20">
       <el-table
-              border=""
-              :data="tableData"
-              style="width: 100%">
+        border=""
+        :data="tableData"
+        style="width: 100%">
         <el-table-column
-                type="index"
-                label="序号"
-                width="50">
+          type="index"
+          label="序号"
+          width="50">
         </el-table-column>
         <el-table-column
-                prop="id"
-                label="球房ID">
+          prop="id"
+          label="球房ID">
         </el-table-column>
         <el-table-column
-                prop="name"
-                label="球房名称">
+          prop="name"
+          label="球房名称">
         </el-table-column>
         <el-table-column label="所在地区">
           <template slot-scope="scope">
@@ -51,29 +51,29 @@
           </template>
         </el-table-column>
         <el-table-column
-                prop="address"
-                label="详细地址">
+          prop="address"
+          label="详细地址">
         </el-table-column>
         <el-table-column
-                prop="chargingRules"
-                label="收费规则">
+          prop="chargingRules"
+          label="收费规则">
         </el-table-column>
         <el-table-column
-                width="180"
-                label="创建时间">
+          width="180"
+          label="创建时间">
           <template slot-scope="scope">
             {{scope.row.createDate | Filter_FormatDate}}
           </template>
         </el-table-column>
         <el-table-column
-                prop="state"
-                width="120"
-                label="活动">
+          prop="state"
+          width="120"
+          label="活动">
         </el-table-column>
         <el-table-column
-                prop="address"
-                width="200"
-                label="操作">
+          prop="address"
+          width="200"
+          label="操作">
           <template slot-scope="scope">
             <el-button :loading="scope.row.buttonLoading" @click="clickEditBtn(scope.row)" type="primary">编辑</el-button>
             <el-button @click="clickRemoveBtn(scope.row)" type="danger">删除</el-button>
@@ -84,20 +84,21 @@
       <el-row class="mg-t20">
         <el-col :offset="8" :span="8">
           <el-pagination
-                  @current-change="Mixin_handleCurrentChange"
-                  :page-size="Mixin_pageSize"
-                  layout="prev, pager, next, jumper"
-                  :total="Mixin_total">
+            @current-change="Mixin_handleCurrentChange"
+            :page-size="Mixin_pageSize"
+            layout="prev, pager, next, jumper"
+            :total="Mixin_total">
           </el-pagination>
         </el-col>
       </el-row>
     </div>
 
     <el-dialog
-            :title="currentHandle === 'add' ? '新增球房': '编辑球房'"
-            :visible.sync="isShowRoomDialog"
-            @close="Mixin_dialogClose('room', 'isShowRoomDialog')"
-            width="1000px">
+      :title="currentHandle === 'add' ? '新增球房': '编辑球房'"
+      :visible.sync="isShowRoomDialog"
+      :close-on-click-modal="false"
+      @close="Mixin_dialogClose('room', 'isShowRoomDialog')"
+      width="1000px">
       <el-form ref="room" :model="room" :rules="roomRules" label-width="120px">
         <el-form-item label="球房名称 :" prop="name">
           <el-input maxlength="20" placeholder="请输入球房名称" v-model.trim="room.name"></el-input>
@@ -125,40 +126,40 @@
           <div class="fs14 clff0000">第一张图为球房头像图</div>
           <div class="dis-fl fl-wp">
             <CmUpload
-                    class="mg-r10 mg-b10"
-                    upload-name="imgOne"
-                    :initObj="room.imgOne"
-                    @uploadSuccess="uploadSuccess">
+              class="mg-r10 mg-b10"
+              upload-name="imgOne"
+              :initObj="room.imgOne"
+              @uploadSuccess="uploadSuccess">
             </CmUpload>
             <CmUpload
-                    class="mg-r10 mg-b10"
-                    upload-name="imgTwo"
-                    :initObj="room.imgTwo"
-                    @uploadSuccess="uploadSuccess">
+              class="mg-r10 mg-b10"
+              upload-name="imgTwo"
+              :initObj="room.imgTwo"
+              @uploadSuccess="uploadSuccess">
             </CmUpload>
             <CmUpload
-                    class="mg-r10 mg-b10"
-                    upload-name="imgThree"
-                    :initObj="room.imgThree"
-                    @uploadSuccess="uploadSuccess">
+              class="mg-r10 mg-b10"
+              upload-name="imgThree"
+              :initObj="room.imgThree"
+              @uploadSuccess="uploadSuccess">
             </CmUpload>
             <CmUpload
-                    class="mg-r10 mg-b10"
-                    upload-name="imgFour"
-                    :initObj="room.imgFour"
-                    @uploadSuccess="uploadSuccess">
+              class="mg-r10 mg-b10"
+              upload-name="imgFour"
+              :initObj="room.imgFour"
+              @uploadSuccess="uploadSuccess">
             </CmUpload>
             <CmUpload
-                    class="mg-r10 mg-b10"
-                    upload-name="imgFive"
-                    :initObj="room.imgFive"
-                    @uploadSuccess="uploadSuccess">
+              class="mg-r10 mg-b10"
+              upload-name="imgFive"
+              :initObj="room.imgFive"
+              @uploadSuccess="uploadSuccess">
             </CmUpload>
             <CmUpload
-                    class="mg-r10 mg-b10"
-                    upload-name="imgSix"
-                    :initObj="room.imgSix"
-                    @uploadSuccess="uploadSuccess">
+              class="mg-r10 mg-b10"
+              upload-name="imgSix"
+              :initObj="room.imgSix"
+              @uploadSuccess="uploadSuccess">
             </CmUpload>
           </div>
         </el-form-item>
@@ -182,10 +183,15 @@
     name: "room",
     data() {
       let validateImg = (rule, value, callback) => {
-
-        if (value === '') {
-          callback(new Error('11'));
-        } else {
+        if (!this.room.imgOne &&
+          !this.room.imgTwo &&
+          !this.room.imgThree &&
+          !this.room.imgFour &&
+          !this.room.imgFive &&
+          !this.room.imgSix) {
+          callback(new Error('请选择球房的照片'));
+        }
+        else {
           callback();
         }
       };
@@ -399,7 +405,8 @@
                   this.isShowRoomDialog = false;
                 }
               });
-            } else {
+            }
+            else {
               //编辑球房
               let params = {
                 id: this.room.id,

@@ -7,13 +7,13 @@
         </el-form-item>
         <el-form-item class="mg-l10" label="创建日期:">
           <el-date-picker
-                  class="w300"
-                  v-model.trim="condition.timeRang"
-                  type="daterange"
-                  value-format="timestamp"
-                  range-separator="至"
-                  start-placeholder="开始日期"
-                  end-placeholder="结束日期">
+            class="w300"
+            v-model.trim="condition.timeRang"
+            type="daterange"
+            value-format="timestamp"
+            range-separator="至"
+            start-placeholder="开始日期"
+            end-placeholder="结束日期">
           </el-date-picker>
         </el-form-item>
         <el-form-item class="mg-l20">
@@ -24,32 +24,32 @@
     </div>
     <div>
       <el-table
-              border=""
-              :data="tableData"
-              style="width: 100%">
+        border=""
+        :data="tableData"
+        style="width: 100%">
         <el-table-column
-                type="index"
-                label="序号"
-                width="50">
+          type="index"
+          label="序号"
+          width="50">
         </el-table-column>
         <el-table-column
-                prop="id"
-                label="赛讯ID"
+          prop="id"
+          label="赛讯ID"
         >
         </el-table-column>
         <el-table-column
-                prop="title"
-                label="赛讯标题"
+          prop="title"
+          label="赛讯标题"
         >
         </el-table-column>
         <el-table-column
-                prop="peopleNumber"
-                label="赛讯人数"
+          prop="peopleNumber"
+          label="赛讯人数"
         >
         </el-table-column>
         <el-table-column
-                prop="money"
-                label="总奖金"
+          prop="money"
+          label="总奖金"
         >
         </el-table-column>
         <!--        <el-table-column-->
@@ -63,15 +63,15 @@
         <!--        </el-table-column>-->
 
         <el-table-column
-                width="180"
-                label="创建时间">
+          width="180"
+          label="创建时间">
           <template slot-scope="scope">
             {{scope.row.createDate | Filter_FormatDate}}
           </template>
         </el-table-column>
         <el-table-column
-                width="100"
-                label="比赛状态">
+          width="100"
+          label="比赛状态">
           <template slot-scope="scope">
             <span v-if="scope.row.state === '0'">待开始</span>
             <span v-if="scope.row.state === '1'">进行中</span>
@@ -79,9 +79,9 @@
           </template>
         </el-table-column>
         <el-table-column
-                width="650"
-                prop="address"
-                label="操作">
+          width="650"
+          prop="address"
+          label="操作">
           <template slot-scope="scope">
             <el-button :loading="scope.row.buttonLoading" @click="clickEditBtn(scope.row)" type="primary">编辑</el-button>
             <el-button @click="clickChangeState(scope.row)">变更状态</el-button>
@@ -95,10 +95,10 @@
       <el-row class="mg-t20">
         <el-col :offset="8" :span="8">
           <el-pagination
-                  @current-change="Mixin_handleCurrentChange"
-                  :page-size="Mixin_pageSize"
-                  layout="prev, pager, next, jumper"
-                  :total="Mixin_total">
+            @current-change="Mixin_handleCurrentChange"
+            :page-size="Mixin_pageSize"
+            layout="prev, pager, next, jumper"
+            :total="Mixin_total">
           </el-pagination>
         </el-col>
       </el-row>
@@ -106,10 +106,11 @@
 
 
     <el-dialog
-            :title="currentHandle === 'add' ? '新增赛讯': '编辑赛讯'"
-            :visible.sync="isShowGameDialog"
-            @close="Mixin_dialogClose('info', 'isShowGameDialog')"
-            width="1000px">
+      :close-on-click-modal="false"
+      :title="currentHandle === 'add' ? '新增赛讯': '编辑赛讯'"
+      :visible.sync="isShowGameDialog"
+      @close="Mixin_dialogClose('info', 'isShowGameDialog')"
+      width="1000px">
       <el-form ref="info" :model="info" :rules="infoRules" label-width="120px">
         <el-form-item label="赛讯标题 :" prop="title">
           <el-input maxlength="20" placeholder="请输入赛讯标题" v-model.trim="info.title"></el-input>
@@ -135,29 +136,29 @@
         </el-form-item>
         <el-form-item label="比赛时间 :" prop="playTime">
           <el-date-picker
-                  value-format="timestamp"
-                  class="wd100"
-                  v-model="info.playTime"
-                  type="datetime"
-                  placeholder="选择比赛时间">
+            value-format="timestamp"
+            class="wd100"
+            v-model="info.playTime"
+            type="datetime"
+            placeholder="选择比赛时间">
           </el-date-picker>
         </el-form-item>
         <el-form-item label="比赛开始时间 :" prop="playTimeStart">
           <el-date-picker
-                  value-format="timestamp"
-                  class="wd100"
-                  v-model="info.playTimeStart"
-                  type="datetime"
-                  placeholder="选择比赛开始时间">
+            value-format="timestamp"
+            class="wd100"
+            v-model="info.playTimeStart"
+            type="datetime"
+            placeholder="选择比赛开始时间">
           </el-date-picker>
         </el-form-item>
         <el-form-item label="比赛结束时间 :" prop="playTimeStop">
           <el-date-picker
-                  value-format="timestamp"
-                  class="wd100"
-                  v-model="info.playTimeStop"
-                  type="datetime"
-                  placeholder="选择比赛结束时间">
+            value-format="timestamp"
+            class="wd100"
+            v-model="info.playTimeStop"
+            type="datetime"
+            placeholder="选择比赛结束时间">
           </el-date-picker>
         </el-form-item>
         <el-form-item label="参赛人数 :" prop="peopleNumber">
@@ -174,28 +175,29 @@
         </el-form-item>
         <el-form-item label="赛讯标题图片  :" prop="imgUrl">
           <CmUpload
-                  upload-name="img"
-                  :initObj="info.imgUrl"
-                  @uploadSuccess="uploadSuccess">
+            upload-name="img"
+            :initObj="info.imgUrl"
+            @uploadSuccess="uploadSuccess">
           </CmUpload>
         </el-form-item>
         <el-form-item label="赛讯详情 :" prop="context">
-<!--          <el-input type="textarea" placeholder="请输入赛讯详情" v-model.trim="info.context"></el-input>-->
+          <!--          <el-input type="textarea" placeholder="请输入赛讯详情" v-model.trim="info.context"></el-input>-->
           <editor-bar v-model="info.context" :isClear="isClear"></editor-bar>
         </el-form-item>
       </el-form>
       <div class="mt10 dis-fl ju-ct">
-        <el-button type="primary" @click="submitInfoBtn('info')">确定</el-button>
+        <el-button :loading="submitButtonLoading" type="primary" @click="submitInfoBtn('info')">确定</el-button>
         <el-button @click="isShowGameDialog = false">取消</el-button>
       </div>
     </el-dialog>
 
     <!--   变更比赛状态弹框-->
     <el-dialog
-            title="变更比赛状态"
-            :visible.sync="isShowStateDialog"
-            @close="Mixin_dialogClose('state', 'isShowStateDialog')"
-            width="400px">
+      :close-on-click-modal="false"
+      title="变更比赛状态"
+      :visible.sync="isShowStateDialog"
+      @close="Mixin_dialogClose('state', 'isShowStateDialog')"
+      width="400px">
       <el-form ref="state" :model="state" :rules="stateRules" label-width="120px">
         <el-form-item label="赛事状态 :" prop="value">
           <el-select class="wd100" v-model="state.value" placeholder="请选择赛事状态">
@@ -213,18 +215,19 @@
 
     <!--   设置抽签规则弹框-->
     <el-dialog
-            title="设置抽签规则"
-            :visible.sync="isShowRuleDialog"
-            @close="Mixin_dialogClose('draw', 'isShowRuleDialog')"
-            width="700px">
+      :close-on-click-modal="false"
+      title="设置抽签规则"
+      :visible.sync="isShowRuleDialog"
+      @close="Mixin_dialogClose('draw', 'isShowRuleDialog')"
+      width="700px">
       <el-form ref="draw" :model="draw" :rules="drawRules" label-width="140px">
         <el-form-item label="不参与抽签人 :" prop="value">
           <el-checkbox-group v-model="draw.value">
             <el-checkbox
-                    v-for="(item, index) in ruleList"
-                    :key="item.id"
-                    :label="item.id"
-                    name="type">
+              v-for="(item, index) in ruleList"
+              :key="item.id"
+              :label="item.id"
+              name="type">
               {{item.nickName}}
             </el-checkbox>
           </el-checkbox-group>
@@ -446,7 +449,8 @@
         },
         //编辑器
         isClear: false,
-        detail: ""
+        detail: "",
+        submitButtonLoading: false,
       }
     },
     computed: {
@@ -588,6 +592,7 @@
       submitInfoBtn(formName) {
         this.$refs[formName].validate(async valid => {
           if (valid) {
+            this.submitButtonLoading = true;
             if (this.currentHandle === 'add') {
               let params = {};
               params.province = this.info.city[0];
@@ -609,6 +614,7 @@
               params.state = this.info.state;
               params.title = this.info.title;
               this.$api.game.addContest(params).then(res => {
+                this.submitButtonLoading = false;
                 if (res.data && res.data.resultCode === 0) {
                   this.$message.success('赛讯新增成功');
                   this.initData();
@@ -616,7 +622,8 @@
                 }
               });
 
-            } else {
+            }
+            else {
               let params = {};
               params.province = this.info.city[0];
               params.city = this.info.city[1];
@@ -638,6 +645,7 @@
               params.title = this.info.title;
               params.id = this.info.id;
               this.$api.game.addContest(params).then(res => {
+                this.submitButtonLoading = false;
                 if (res.data && res.data.resultCode === 0) {
                   this.$message.success('赛讯编辑成功');
                   this.initData();
@@ -675,7 +683,8 @@
             this.ruleList = data;
             if (data.length === 0) {
               this.$message.warning('当前没有参与抽签的人员');
-            } else {
+            }
+            else {
               this.draw.id = row.id;
               data.forEach((item, index) => {
                 if (item.isDraw === '1') {
@@ -688,7 +697,7 @@
         });
       },
       //设置自动抽签
-      clickAutoBtn (row){
+      clickAutoBtn(row) {
         this.$confirm(`确定该比赛设置自动抽签 ?`, '', {
           confirmButtonText: '确定',
           cancelButtonText: '取消',
@@ -706,10 +715,7 @@
       submitRuleBtn(formName) {
         this.$refs[formName].validate(valid => {
           if (valid) {
-            let params = {
-              contestId: this.draw.id,
-              userIds: [...new Set(this.draw.value)].join(','),
-            };
+            let params = {b};
             this.$api.game.notDrawUser(params).then(res => {
               if (res.data && res.data.resultCode === 0) {
                 this.$message.success('设置抽签规则成功');

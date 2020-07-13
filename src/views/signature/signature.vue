@@ -94,6 +94,7 @@
     </div>
 
     <el-dialog
+      :close-on-click-modal="false"
             :title="currentHandle === 'add' ? '新增签表': '编辑签表'"
             :visible.sync="isShowInfoDialog"
             @close="Mixin_dialogClose('info', 'isShowInfoDialog')"

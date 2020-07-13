@@ -1,7 +1,6 @@
 <template>
   <div class="information-wrap">
     <div>
-      <!--      <el-input @input.native="limitInput($event, info.readNumber, 3, 2)" v-model.trim="info.readNumber"></el-input>-->
     </div>
     <br>
     <div>
@@ -11,13 +10,13 @@
         </el-form-item>
         <el-form-item class="mg-l20" label="创建日期:">
           <el-date-picker
-                  class="w300"
-                  v-model.trim="condition.timeRang"
-                  type="daterange"
-                  value-format="timestamp"
-                  range-separator="至"
-                  start-placeholder="开始日期"
-                  end-placeholder="结束日期">
+            class="w300"
+            v-model.trim="condition.timeRang"
+            type="daterange"
+            value-format="timestamp"
+            range-separator="至"
+            start-placeholder="开始日期"
+            end-placeholder="结束日期">
           </el-date-picker>
         </el-form-item>
         <el-form-item class="mg-l20">
@@ -28,30 +27,30 @@
     </div>
     <div>
       <el-table
-              border=""
-              :data="tableData"
-              style="width: 100%">
+        border=""
+        :data="tableData"
+        style="width: 100%">
         <el-table-column
-                type="index"
-                label="序号"
-                width="50">
+          type="index"
+          label="序号"
+          width="50">
         </el-table-column>
         <el-table-column
-                prop="id"
-                label="资讯ID">
+          prop="id"
+          label="资讯ID">
         </el-table-column>
         <el-table-column
-                prop="title"
-                label="资讯标题">
+          prop="title"
+          label="资讯标题">
         </el-table-column>
         <el-table-column
-                width="120"
-                prop="type"
-                label="资讯类型">
+          width="120"
+          prop="type"
+          label="资讯类型">
         </el-table-column>
         <el-table-column
-                width="260"
-                label="缩略图">
+          width="260"
+          label="缩略图">
           <template slot-scope="scope">
             <div class="thumbnail-wrap">
               <img class="hg100 wd100" :src="scope.row.imgUrl" alt="">
@@ -59,24 +58,24 @@
           </template>
         </el-table-column>
         <el-table-column
-                width="180"
-                label="创建时间">
+          width="180"
+          label="创建时间">
           <template slot-scope="scope">
             {{scope.row.createDate | Filter_FormatDate}}
           </template>
         </el-table-column>
         <el-table-column
-                prop="showFlag"
-                width="100"
-                label="资讯状态">
+          prop="showFlag"
+          width="100"
+          label="资讯状态">
           <template slot-scope="scope">
             <el-tag v-if="scope.row.showFlag" type="success">启用</el-tag>
             <el-tag v-else type="danger">禁用</el-tag>
           </template>
         </el-table-column>
         <el-table-column
-                width="300"
-                label="操作">
+          width="300"
+          label="操作">
           <template slot-scope="scope">
             <el-button :loading="scope.row.buttonLoading" @click="clickEditBtn(scope.row)" type="primary">编辑</el-button>
             <el-button v-if="!scope.row.showFlag" @click="clickStartOrEndBtn(scope.row, 'start')" type="success">启用
@@ -90,29 +89,30 @@
       <el-row class="mg-t20">
         <el-col :offset="8" :span="8">
           <el-pagination
-                  @current-change="Mixin_handleCurrentChange"
-                  :page-size="Mixin_pageSize"
-                  layout="total, prev, pager, next, jumper"
-                  :total="Mixin_total">
+            @current-change="Mixin_handleCurrentChange"
+            :page-size="Mixin_pageSize"
+            layout="total, prev, pager, next, jumper"
+            :total="Mixin_total">
           </el-pagination>
         </el-col>
       </el-row>
     </div>
 
     <el-dialog
-            :title="currentHandle === 'add' ? '新增资讯': '编辑资讯'"
-            :visible.sync="isShowInfoDialog"
-            @close="Mixin_dialogClose('info', 'isShowInfoDialog')"
-            width="1000px">
+      :title="currentHandle === 'add' ? '新增资讯': '编辑资讯'"
+      :visible.sync="isShowInfoDialog"
+      :close-on-click-modal="false"
+      @close="Mixin_dialogClose('info', 'isShowInfoDialog')"
+      width="1000px">
       <el-form ref="info" :model="info" :rules="infoRules" label-width="120px">
         <el-form-item label="资讯标题 :" prop="title">
           <el-input maxlength="20" placeholder="请输入资讯标题" v-model.trim="info.title"></el-input>
         </el-form-item>
         <el-form-item label="资讯标题图片 :" prop="img">
           <CmUpload
-                  upload-name="img"
-                  :initObj="info.img"
-                  @uploadSuccess="uploadSuccess">
+            upload-name="img"
+            :initObj="info.img"
+            @uploadSuccess="uploadSuccess">
           </CmUpload>
         </el-form-item>
 
@@ -317,7 +317,8 @@
                   this.isShowInfoDialog = false;
                 }
               });
-            } else {
+            }
+            else {
               //编辑资讯
               let params = {
                 id: this.info.id,
@@ -382,7 +383,8 @@
         console.log(value.split("."));
         if (after) {
           value = value.split(".")[0].slice(0, before) + "." + value.split(".")[1] ? value.split(".")[1].slice(0, after) : '';
-        } else {
+        }
+        else {
           value = value.slice(0, before);
         }
         event.target.value = value;

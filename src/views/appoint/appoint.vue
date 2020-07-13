@@ -83,6 +83,7 @@
 
     <el-dialog
             title="查看约球"
+            :close-on-click-modal="false"
             :visible.sync="isShowAppointDialog"
             @close="Mixin_dialogClose('appoint', 'isShowAppointDialog')"
             width="700px">
