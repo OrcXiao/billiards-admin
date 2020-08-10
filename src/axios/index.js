@@ -8,10 +8,6 @@ axios.defaults.timeout = 50000;
 // axios.defaults.baseURL = 'http://billiards.utools.club/api';
 axios.defaults.baseURL = 'http://billiards.aafu.xyz:6017/';
 
-// axios.defaults.baseURL = window.location.href + 'api';
-
-// http://www.taiqiuplus.com:8081/api';
-
 axios.interceptors.response.use(res => {
   //错误码为-1, 统一进行提示.
   if (res.data.resultCode !== 0) {

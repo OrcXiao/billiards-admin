@@ -248,6 +248,28 @@
   export default {
     name: "information",
     data() {
+      let validatorPlayTimeStart = (rule, value, callback) => {
+        if (!value) {
+          callback(new Error('开始时间不能为空'));
+        }
+        else if (this.info.playTimeStop && (this.info.playTimeStart > this.info.playTimeStop)) {
+          callback(new Error('开始时间不能大于结束时间'));
+        }
+        else {
+          callback();
+        }
+      };
+      let validatorPlayTimeStop = (rule, value, callback) => {
+        if (!value) {
+          callback(new Error('结束时间不能为空'));
+        }
+        else if (this.info.playTimeStart && (this.info.playTimeStop < this.info.playTimeStart)) {
+          callback(new Error('结束时间不能小于开始时间'));
+        }
+        else {
+          callback();
+        }
+      };
       return {
         props: {
           value: 'text',
@@ -359,14 +381,14 @@
           playTimeStart: [
             {
               required: true,
-              validator: this.$verifys.nullStr({item: '比赛开始时间'}),
+              validator: validatorPlayTimeStart,
               trigger: 'blur'
             },
           ],
           playTimeStop: [
             {
               required: true,
-              validator: this.$verifys.nullStr({item: '比赛结束时间'}),
+              validator: validatorPlayTimeStop,
               trigger: 'blur'
             },
           ],
@@ -715,7 +737,7 @@
       submitRuleBtn(formName) {
         this.$refs[formName].validate(valid => {
           if (valid) {
-            let params = {b};
+            let params = {};
             this.$api.game.notDrawUser(params).then(res => {
               if (res.data && res.data.resultCode === 0) {
                 this.$message.success('设置抽签规则成功');
