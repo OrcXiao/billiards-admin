@@ -7,13 +7,13 @@
         </el-form-item>
         <el-form-item class="mg-l20" label="创建日期:">
           <el-date-picker
-                  class="w300"
-                  v-model.trim="condition.timeRang"
-                  type="daterange"
-                  value-format="timestamp"
-                  range-separator="至"
-                  start-placeholder="开始日期"
-                  end-placeholder="结束日期">
+            class="w300"
+            v-model.trim="condition.timeRang"
+            type="daterange"
+            value-format="timestamp"
+            range-separator="至"
+            start-placeholder="开始日期"
+            end-placeholder="结束日期">
           </el-date-picker>
         </el-form-item>
         <el-form-item class="mg-l20">
@@ -24,25 +24,25 @@
     </div>
     <div>
       <el-table
-              border=""
-              :data="tableData"
-              style="width: 100%">
+        border=""
+        :data="tableData"
+        style="width: 100%">
         <el-table-column
-                type="index"
-                label="序号"
-                width="50">
+          type="index"
+          label="序号"
+          width="50">
         </el-table-column>
         <el-table-column
-                prop="id"
-                label="教程ID">
+          prop="id"
+          label="教程ID">
         </el-table-column>
         <el-table-column
-                prop="title"
-                label="教程标题">
+          prop="title"
+          label="教程标题">
         </el-table-column>
         <el-table-column
-                width="260"
-                label="缩略图">
+          width="260"
+          label="缩略图">
           <template slot-scope="scope">
             <div class="thumbnail-wrap">
               <img class="hg100 wd100" :src="scope.row.imgUrl" alt="">
@@ -51,24 +51,24 @@
         </el-table-column>
 
         <el-table-column
-                width="180"
-                label="创建时间">
+          width="180"
+          label="创建时间">
           <template slot-scope="scope">
             {{scope.row.createDate | Filter_FormatDate}}
           </template>
         </el-table-column>
         <el-table-column
-                prop="state"
-                width="120"
-                label="教程状态">
+          prop="state"
+          width="120"
+          label="教程状态">
           <template slot-scope="scope">
             <el-tag v-if="scope.row.showFlag" type="success">启用</el-tag>
             <el-tag v-else type="danger">禁用</el-tag>
           </template>
         </el-table-column>
         <el-table-column
-                width="300"
-                label="操作">
+          width="300"
+          label="操作">
           <template slot-scope="scope">
             <el-button :loading="scope.row.buttonLoading" @click="clickEditBtn(scope.row)" type="primary">编辑</el-button>
             <el-button v-if="!scope.row.showFlag" @click="clickStartOrEndBtn(scope.row, 'start')" type="success">启用
@@ -83,10 +83,10 @@
       <el-row class="mg-t20">
         <el-col :offset="8" :span="8">
           <el-pagination
-                  @current-change="Mixin_handleCurrentChange"
-                  :page-size="Mixin_pageSize"
-                  layout="total, prev, pager, next, jumper"
-                  :total="Mixin_total">
+            @current-change="Mixin_handleCurrentChange"
+            :page-size="Mixin_pageSize"
+            layout="total, prev, pager, next, jumper"
+            :total="Mixin_total">
           </el-pagination>
         </el-col>
       </el-row>
@@ -94,10 +94,10 @@
 
     <el-dialog
       :close-on-click-modal="false"
-            :title="currentHandle === 'add' ? '新增教程': '编辑教程'"
-            :visible.sync="isShowInfoDialog"
-            @close="Mixin_dialogClose('info', 'isShowInfoDialog')"
-            width="700px">
+      :title="currentHandle === 'add' ? '新增教程': '编辑教程'"
+      :visible.sync="isShowInfoDialog"
+      @close="Mixin_dialogClose('info', 'isShowInfoDialog')"
+      width="700px">
       <el-form ref="info" :model="info" :rules="infoRules" label-width="120px">
         <el-form-item label="教程标题 :" prop="title">
           <el-input maxlength="20" placeholder="请输入教程标题" v-model.trim="info.title"></el-input>
@@ -107,9 +107,9 @@
         </el-form-item>
         <el-form-item label="教程标题图片  :" prop="img">
           <CmUpload
-                  upload-name="img"
-                  :initObj="info.img"
-                  @uploadSuccess="uploadSuccess">
+            upload-name="img"
+            :initObj="info.img"
+            @uploadSuccess="uploadSuccess">
           </CmUpload>
         </el-form-item>
       </el-form>
@@ -124,8 +124,8 @@
 
 <script>
   export default {
-    name: "course",
-    data() {
+    name: 'course',
+    data () {
       return {
         //搜索条件
         condition: {
@@ -150,21 +150,21 @@
           title: [
             {
               required: true,
-              validator: this.$verifys.nullStr({item: '教程标题'}),
+              validator: this.$verifys.nullStr({ item: '教程标题' }),
               trigger: 'blur'
             },
           ],
           details: [
             {
               required: true,
-              validator: this.$verifys.nullStr({item: '教程详情'}),
+              validator: this.$verifys.nullStr({ item: '教程详情' }),
               trigger: 'blur'
             },
           ],
           img: [
             {
               required: true,
-              validator: this.$verifys.nullStr({item: '教程标题图片'}),
+              validator: this.$verifys.nullStr({ item: '教程标题图片' }),
               trigger: 'change'
             },
           ],
@@ -175,68 +175,68 @@
       }
     },
     computed: {},
-    created() {
+    created () {
     },
-    mounted() {
+    mounted () {
       this.$nextTick(() => {
-        this.initData();
+        this.initData()
       })
     },
     methods: {
       //获取数据
-      initData() {
+      initData () {
         let params = {
           title: this.condition.title,
           currentPage: this.Mixin_currentPage,
           pageSize: this.Mixin_pageSize,
-        };
+        }
         if (this.condition.timeRang) {
-          params.startDate = this.condition.timeRang[0];
-          params.stopDate = this.condition.timeRang[1] + (1000 * 60 * 60 * 24 - 1);
+          params.startDate = this.condition.timeRang[0]
+          params.stopDate = this.condition.timeRang[1] + (1000 * 60 * 60 * 24 - 1)
         }
         this.$api.course.getCourses(params).then(res => {
           if (res.data && res.data.resultCode === 0) {
             res.data.data.records.forEach((item, index) => {
-              item.buttonLoading = false;
-            });
-            this.tableData = res.data.data.records;
-            this.Mixin_total = res.data.data.total;
+              item.buttonLoading = false
+            })
+            this.tableData = res.data.data.records
+            this.Mixin_total = res.data.data.total
           }
-        });
+        })
       },
       //点击新增按钮
-      clickAddBtn() {
-        this.currentHandle = 'add';
-        this.info.title = '';
-        this.info.details = '';
-        this.info.img = '';
-        this.isShowInfoDialog = true;
+      clickAddBtn () {
+        this.currentHandle = 'add'
+        this.info.title = ''
+        this.info.details = ''
+        this.info.img = ''
+        this.isShowInfoDialog = true
       },
       //点击编辑按钮
-      clickEditBtn(row) {
-        this.currentHandle = 'edit';
-        this.info.id = row.id;
-        row.buttonLoading = true;
+      clickEditBtn (row) {
+        this.currentHandle = 'edit'
+        this.info.id = row.id
+        row.buttonLoading = true
         this.$api.course.getCourseById(row.id).then(res => {
-          row.buttonLoading = false;
+          row.buttonLoading = false
           if (res.data && res.data.resultCode === 0) {
-            let data = res.data.data;
-            this.info.title = data.title;
-            this.info.details = data.context;
-            this.info.img = data.imgUrl;
-            this.isShowInfoDialog = true;
+            let data = res.data.data
+            this.info.title = data.title
+            this.info.details = data.context
+            this.info.img = data.imgUrl
+            this.isShowInfoDialog = true
           }
-        });
+        })
       },
       //上传成功
-      uploadSuccess(data) {
-        this.info.img = data.imgSrc;
+      uploadSuccess (data) {
+        this.info.img = data.imgSrc
       },
       //提交教程
-      submitInfoBtn(formName) {
+      submitInfoBtn (formName) {
         this.$refs[formName].validate(async valid => {
           if (valid) {
-            this.submitButtonLoading = true;
+            this.submitButtonLoading = true
             if (this.currentHandle === 'add') {
               //新增资讯
               let params = {
@@ -244,15 +244,15 @@
                 title: this.info.title,
                 showFlag: false,
                 imgUrl: this.info.img
-              };
+              }
               this.$api.course.addCourse(params).then(res => {
-                this.submitButtonLoading = false;
+                this.submitButtonLoading = false
                 if (res.data && res.data.resultCode === 0) {
-                  this.$message.success('新增教程成功');
-                  this.initData();
-                  this.isShowInfoDialog = false;
+                  this.$message.success('新增教程成功')
+                  this.initData()
+                  this.isShowInfoDialog = false
                 }
-              });
+              })
             } else {
               //编辑资讯
               let params = {
@@ -261,21 +261,21 @@
                 title: this.info.title,
                 showFlag: false,
                 imgUrl: this.info.img
-              };
+              }
               this.$api.course.addCourse(params).then(res => {
-                this.submitButtonLoading = false;
+                this.submitButtonLoading = false
                 if (res.data && res.data.resultCode === 0) {
-                  this.$message.success('修改教程成功');
-                  this.initData();
-                  this.isShowInfoDialog = false;
+                  this.$message.success('修改教程成功')
+                  this.initData()
+                  this.isShowInfoDialog = false
                 }
-              });
+              })
             }
           }
         })
       },
       //点击启用/禁用按钮
-      clickStartOrEndBtn(row, type) {
+      clickStartOrEndBtn (row, type) {
         this.$confirm(`确定${type === 'start' ? '启用' : '禁用'}当前教程 ?`, '', {
           confirmButtonText: '确定',
           cancelButtonText: '取消',
@@ -283,17 +283,17 @@
         }).then(() => {
           this.$api.course.updateShow(row.id).then(res => {
             if (res.data && res.data.resultCode === 0) {
-              this.$message.success(`教程${type === 'start' ? '启用' : '禁用'}成功`);
-              this.initData();
+              this.$message.success(`教程${type === 'start' ? '启用' : '禁用'}成功`)
+              this.initData()
             }
-          });
+          })
 
         }).catch(() => {
 
-        });
+        })
       },
       //点击'删除'按钮
-      clickRemoveBtn(row) {
+      clickRemoveBtn (row) {
         this.$confirm(`确定删除当前教程 ?`, '', {
           confirmButtonText: '确定',
           cancelButtonText: '取消',
@@ -301,12 +301,12 @@
         }).then(() => {
           this.$api.course.delCourse(row.id).then(res => {
             if (res.data && res.data.resultCode === 0) {
-              this.$message.success(`教程删除成功`);
-              this.Mixin_handleCurrentChange(1);
+              this.$message.success(`教程删除成功`)
+              this.Mixin_handleCurrentChange(1)
             }
-          });
+          })
         }).catch(() => {
-        });
+        })
       },
     },
     props: {},

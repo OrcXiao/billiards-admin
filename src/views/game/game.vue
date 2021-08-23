@@ -97,6 +97,7 @@
           <el-pagination
             @current-change="Mixin_handleCurrentChange"
             :page-size="Mixin_pageSize"
+            :current-page="Mixin_currentPage"
             layout="prev, pager, next, jumper"
             :total="Mixin_total">
           </el-pagination>
@@ -104,17 +105,16 @@
       </el-row>
     </div>
 
-
-    <el-dialog
-      :close-on-click-modal="false"
-      :title="currentHandle === 'add' ? '新增赛讯': '编辑赛讯'"
-      :visible.sync="isShowGameDialog"
-      @close="Mixin_dialogClose('info', 'isShowGameDialog')"
-      width="1000px">
-      <el-form ref="info" :model="info" :rules="infoRules" label-width="120px">
-        <el-form-item label="赛讯标题 :" prop="title">
-          <el-input maxlength="20" placeholder="请输入赛讯标题" v-model.trim="info.title"></el-input>
-        </el-form-item>
+        <el-dialog
+          :close-on-click-modal="false"
+          :title="currentHandle === 'add' ? '新增赛讯': '编辑赛讯'"
+          :visible.sync="isShowGameDialog"
+          @close="Mixin_dialogClose('info', 'isShowGameDialog')"
+          width="1000px">
+          <el-form ref="info" :model="info" :rules="infoRules" label-width="120px">
+            <el-form-item label="赛讯标题 :" prop="title">
+              <el-input maxlength="20" placeholder="请输入赛讯标题" v-model.trim="info.title"></el-input>
+            </el-form-item>
         <el-form-item label="赛事城市 :" prop="city">
           <el-cascader class="wd100" placeholder="请选择赛事城市" v-model.trim="info.city" :options="options"
                        :props="props"></el-cascader>

@@ -2,10 +2,8 @@
   <div class="signature-wrap">
     <div>
       <el-form :inline="true">
-        <el-form-item label="地区:">
-          <el-cascader v-model.trim="condition.area" :options="options"></el-cascader>
-        </el-form-item>
-        <el-form-item class="mg-l10" label="标题:">
+        <el-form-item label="地区:"> </el-form-item>
+        <el-form-item class="mg-l10" label="标题:">v
           <el-input v-model.trim="condition.title" clearable placeholder="请输入标题"></el-input>
         </el-form-item>
         <el-form-item class="mg-l10" label="创建日期:">
@@ -129,7 +127,6 @@
                     //教程图片
                     img: ''
                 },
-
             }
         },
         computed: {},
